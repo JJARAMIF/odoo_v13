@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="wizard_add_url_images_view" model="ir.ui.view">
+            <field name="name">wizard.add.url.images.view</field>
+            <field name="model">wizard.add.url.images</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Add URL Images in Products" version="7.0">
+                    <group colspan="4">
+                        <separator colspan="4" />
+                        <label
+                            string="Se va a proceder a la carga de imagenes desde las URLs" />
+                    </group>
+                    <footer>
+                        <group colspan="8" col="8">
+                            <button name="update_url_product_images" string="Update Images"
+                                type="object" class="oe_highlight" />
+                            or
+                            <button special="cancel" string="Cancel" />
+                        </group>
+                    </footer>
+
+                </form>
+            </field>
+        </record>
+
+	<act_window id="add_url_images_wizard"
+				name="Add url images"
+				src_model="product.product"
+				res_model="wizard.add.url.images"
+				view_mode="form"
+				target="new"
+				key2="client_action_multi" />
+
+		<menuitem name="Add URL images" parent="product.menu_products"
+			id="create_url_images_wizard_menu" action="add_url_images_wizard" />
+
+    </data>
+</openerp>
