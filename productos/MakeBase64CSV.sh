@@ -1,7 +1,7 @@
 #!/bin/bash
 # Usage : MakeBase64CSV.sh product_imagen.csv prodcut_base64.csv
 # product_imagen.csv columns are : externalID, nombre, filename or identifier
-# product_imagen.csv separator MUST BE |
+# product_imagen.csv separator MUST BE ;
 
 echo \"External ID\",\"Image\" > $2
 
