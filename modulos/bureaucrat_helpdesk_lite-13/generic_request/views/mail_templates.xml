@@ -40,6 +40,10 @@
                     <th style="border-bottom: 1px solid #ccc; text-align: left;">Assignee</th>
                     <td style="border-bottom: 1px solid #ccc;"><span t-esc="object.sudo().user_id.name"/></td>
                 </tr>
+                <tr name="tr_request_comment" t-if="request_event.assign_comment" style="vertical-align: top">
+                    <th style="border-bottom: 1px solid #ccc; text-align: left;">Assign comment</th>
+                    <td style="border-bottom: 1px solid #ccc;"><span t-esc="request_event.assign_comment"/></td>
+                </tr>
             </tbody>
             </table>
         </div>

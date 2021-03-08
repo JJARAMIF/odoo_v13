@@ -5,7 +5,6 @@ from odoo import models, fields, api
 from .request_request import (AVAILABLE_PRIORITIES,
                               AVAILABLE_IMPACTS,
                               AVAILABLE_URGENCIES)
-
 _logger = logging.getLogger(__name__)
 
 
@@ -34,6 +33,10 @@ class RequestEvent(models.Model):
     old_text = fields.Html(readonly=True)
     new_text = fields.Html(readonly=True)
 
+    # Change request deadline
+    old_deadline = fields.Date()
+    new_deadline = fields.Date()
+
     # Request stage change
     route_id = fields.Many2one('request.stage.route', readonly=True)
     old_stage_id = fields.Many2one('request.stage', readonly=True)
@@ -41,7 +44,7 @@ class RequestEvent(models.Model):
 
     # Request Category Change
     old_category_id = fields.Many2one('request.category', readonly=True)
-    new_category_id = fields.Many2one('request.category', readonly=True)
+    new_category_id = fields.Many2one('request.category', readonly=True,)
 
     # Priority changed
     old_priority = fields.Selection(
@@ -58,6 +61,24 @@ class RequestEvent(models.Model):
         selection=AVAILABLE_URGENCIES, readonly=True)
     new_urgency = fields.Selection(
         selection=AVAILABLE_URGENCIES, readonly=True)
+
+    # Kanban state changed
+    old_kanban_state = fields.Selection(
+        selection="_get_selection_kanban_state",
+        readonly=True)
+    new_kanban_state = fields.Selection(
+        selection="_get_selection_kanban_state",
+        readonly=True)
+
+    # Timetracking
+    timesheet_line_id = fields.Many2one(
+        'request.timesheet.line', 'Timesheet line',
+        readonly=True, ondelete='cascade')
+
+    assign_comment = fields.Text()
+
+    def _get_selection_kanban_state(self):
+        return self.env['request.request']._fields['kanban_state'].selection
 
     def name_get(self):
         res = []
@@ -84,6 +105,8 @@ class RequestEvent(models.Model):
             'new_stage': self.new_stage_id,
             'old_priority': self.old_priority,
             'new_priority': self.new_priority,
+            'old_kanban_state': self.old_kanban_state,
+            'new_kanban_state': self.new_kanban_state,
             'request_event': self,
         }
 

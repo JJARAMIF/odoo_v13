@@ -1,6 +1,8 @@
 import logging
+from psycopg2 import IntegrityError
 
 from odoo import exceptions
+from odoo.tools.misc import mute_logger
 
 from .common import RequestCase, freeze_time
 from ..models.request_request import html2text
@@ -397,6 +399,31 @@ class TestRequestBase(RequestCase):
             cron_job.method_direct_trigger()
             self.assertEqual(request.request_event_count, 0)
 
+    def test_250_request_create_simple_without_channel(self):
+        Request = self.env['request.request']
+        channel_other = self.env.ref('generic_request.request_channel_other')
+
+        request = Request.create({
+            'type_id': self.simple_type.id,
+            'category_id': self.general_category.id,
+            'request_text': 'Request Text',
+        })
+
+        self.assertEqual(request.channel_id, channel_other)
+
+    def test_260_request_create_simple_with_channel_call(self):
+        Request = self.env['request.request']
+        channel_call = self.env.ref('generic_request.request_channel_call')
+
+        request = Request.create({
+            'type_id': self.simple_type.id,
+            'category_id': self.general_category.id,
+            'request_text': 'Request Text',
+            'channel_id': channel_call.id,
+        })
+
+        self.assertEqual(request.channel_id, channel_call)
+
     def test_request_priority_changed_event_created(self):
         request = self.env['request.request'].create({
             'type_id': self.simple_type.id,
@@ -460,3 +487,288 @@ class TestRequestBase(RequestCase):
         # Check that changing category not allowed
         self.assertEqual(self.request_1.stage_id, self.stage_sent)
         self.assertFalse(self.request_1.can_change_category)
+
+    def test_request_can_change_deadline(self):
+        self.assertEqual(self.request_1.stage_id, self.stage_draft)
+        self.assertTrue(self.request_1.can_change_deadline)
+
+        # move request to sent stage
+        self.request_1.stage_id = self.stage_sent
+
+        # Check that changing deadline is allowed
+        self.assertEqual(self.request_1.stage_id, self.stage_sent)
+        self.assertTrue(self.request_1.can_change_deadline)
+
+        # move request to confirmed stage
+        self.request_1.stage_id = self.stage_confirmed
+
+        # Check that changing deadline not allowed
+        self.assertEqual(self.request_1.stage_id, self.stage_confirmed)
+        self.assertFalse(self.request_1.can_change_deadline)
+
+    def test_request_create_new_stage(self):
+        stage = self.env['request.stage'].create({
+            'request_type_id': self.simple_type.id,
+            'name': 'Test',
+            'code': 'test',
+        })
+        # Ensure that new stage is last stage
+        self.assertEqual(stage, self.simple_type.stage_ids.sorted()[-1])
+
+    def test_request_create_new_stage_with_sequence(self):
+        stage = self.env['request.stage'].create({
+            'request_type_id': self.simple_type.id,
+            'name': 'Test',
+            'code': 'test',
+            'sequence': 0,
+        })
+        # Ensure that new stage is first stage
+        self.assertEqual(stage, self.simple_type.stage_ids.sorted()[0])
+
+    def test_request_create_first_stage(self):
+        rtype = self.env['request.type'].with_context(
+            create_default_stages=False,
+        ).create({
+            'name': 'Test Request Stages',
+            'code': 'rest-request-stages',
+        })
+
+        self.assertFalse(rtype.stage_ids)
+
+        # Create new stage
+        stage = self.env['request.stage'].create({
+            'request_type_id': rtype.id,
+            'name': 'Test',
+            'code': 'Test',
+        })
+        self.assertEqual(stage.sequence, 5)
+
+    def test_request_suggested_recipients(self):
+        author = self.env.ref('base.res_partner_address_7')
+        partner = self.env.ref('base.res_partner_4')
+
+        request = self.env.ref(
+            'generic_request.request_request_type_simple_demo_3')
+
+        # Check that author is auto subscribed, but partner is not subscribed
+        self.assertIn(author, request.message_partner_ids)
+        self.assertNotIn(partner, request.message_partner_ids)
+
+        # By default suggestion for partner disabled, thus no partner
+        # have to be suggested
+        result = request._message_get_suggested_recipients()[request.id]
+        partner_ids = [r[0] for r in result]
+        self.assertFalse(partner_ids)
+
+        # Enable suggestion for partner
+        self.env.user.company_id.request_mail_suggest_partner = True
+
+        result = request._message_get_suggested_recipients()[request.id]
+        partner_ids = [r[0] for r in result]
+        self.assertEqual(len(partner_ids), 1)
+
+        # Ensure that partner is in suggested recipients
+        self.assertNotIn(author.id, partner_ids)
+        self.assertIn(partner.id, partner_ids)
+
+        request.message_subscribe(partner_ids=partner.ids)
+
+        # Ensure that after we subscribe partner it disappears from suggested
+        # list
+        result = request._message_get_suggested_recipients()[request.id]
+        partner_ids = [r[0] for r in result]
+        self.assertFalse(partner_ids)
+
+    def test_request_creation_template(self):
+        request = self.creation_template.do_create_request({})
+        self.assertEqual(
+            request.category_id, self.creation_template.request_category_id)
+        self.assertEqual(
+            request.type_id, self.creation_template.request_type_id)
+        self.assertEqual(
+            request.request_text, self.creation_template.request_text)
+
+    def test_request_kind_menuitem_toggle(self):
+        self.assertFalse(self.request_kind.menuitem_toggle)
+        self.assertFalse(self.request_kind.menuitem_name)
+        self.assertFalse(self.request_kind.menuaction_name)
+
+        # toggle (enable) menuitem button
+        self.request_kind.menuitem_toggle = True
+
+        self.assertTrue(self.request_kind.menuitem_id)
+        self.assertTrue(self.request_kind.menuaction_id)
+        self.assertEqual(
+            self.request_kind.menuitem_name, self.request_kind.name
+        )
+        self.assertEqual(
+            self.request_kind.menuaction_name, self.request_kind.name
+        )
+
+    def test_default_request_text(self):
+        request = self.env['request.request'].new({
+            'type_id': self.access_type.id,
+            'category_id': self.tec_configuration_category.id,
+            'user_id': self.request_manager.id,
+        })
+        self.assertFalse(request.request_text)
+
+        request.onchange_type_id()
+
+        self.assertEqual(request.request_text,
+                         request.type_id.default_request_text)
+
+    def test_default_response_text(self):
+        request = self.request_2
+
+        close_route = self.env.ref(
+            'generic_request.request_stage_route_type_access_sent_to_rejected')
+        close_stage = self.env.ref(
+            'generic_request.request_stage_route_type_access_sent_to_rejected')
+
+        request.stage_id = close_stage.id
+
+        request_closing = self.env['request.wizard.close'].create({
+            'request_id': request.id,
+            'close_route_id': close_route.id,
+        })
+        self.assertFalse(request_closing.response_text)
+
+        request_closing.onchange_close_route_id()
+
+        self.assertEqual(request_closing.response_text,
+                         close_route.default_response_text)
+
+        request_closing.action_close_request()
+
+        self.assertTrue(request.closed)
+
+        self.assertEqual(request.response_text,
+                         close_route.default_response_text)
+
+        # toggle (disable) menuitem button
+        self.request_kind.menuitem_toggle = False
+
+        action = self.request_kind.menuaction_id
+
+        self.assertFalse(self.request_kind.menuitem_id)
+        self.assertFalse(self.request_kind.menuaction_id)
+
+        self.assertFalse(action.exists())
+
+    def test_complex_priority(self):
+        test_request = self.env.ref(
+            'generic_request.demo_request_with_complex_priority')
+
+        # test complex priority
+        self.assertEqual(test_request.priority, '2')
+
+        # change impact and urgency
+        test_request.impact = '0'
+        test_request.urgency = '1'
+
+        # test complex priority calculation
+        self.assertEqual(test_request.priority, '1')
+
+        event = self.env['request.event'].search(
+            [('request_id', '=', test_request.id)])
+        self.assertEqual(event[0].event_code, 'urgency-changed')
+        self.assertEqual(event[1].event_code, 'priority-changed')
+        self.assertEqual(event[2].event_code, 'impact-changed')
+        self.assertEqual(event[3].event_code, 'priority-changed')
+
+    def test_deadline_state_1(self):
+        self.request_1.deadline_date = '2020-03-17'
+
+        with freeze_time('2020-03-16'):
+            self.request_1.invalidate_cache()
+            self.assertEqual(self.request_1.deadline_state, 'ok')
+
+        with freeze_time('2020-03-17'):
+            self.request_1.invalidate_cache()
+            self.assertEqual(self.request_1.deadline_state, 'today')
+
+        with freeze_time('2020-03-18'):
+            self.request_1.invalidate_cache()
+            self.assertEqual(self.request_1.deadline_state, 'overdue')
+
+    def test_deadline_state_2(self):
+        self.request_1.deadline_date = '2020-03-17'
+
+        with freeze_time('2020-03-16'):
+            self.request_1.stage_id = self.stage_sent
+            self.request_1.stage_id = self.stage_confirmed
+            self.request_1.invalidate_cache()
+            self.assertEqual(self.request_1.deadline_state, 'ok')
+
+        with freeze_time('2020-03-18'):
+            self.request_1.invalidate_cache()
+            self.assertEqual(self.request_1.deadline_state, 'ok')
+
+    def test_deadline_state_3(self):
+        self.request_1.deadline_date = '2020-03-17'
+
+        with freeze_time('2020-03-17'):
+            self.request_1.invalidate_cache()
+            self.assertEqual(self.request_1.deadline_state, 'today')
+
+            self.request_1.stage_id = self.stage_sent
+            self.request_1.stage_id = self.stage_confirmed
+            self.request_1.invalidate_cache()
+            self.assertEqual(self.request_1.deadline_state, 'ok')
+
+        with freeze_time('2020-03-18'):
+            self.request_1.invalidate_cache()
+            self.assertEqual(self.request_1.deadline_state, 'ok')
+
+    def test_deadline_state_4(self):
+        self.request_1.deadline_date = '2020-03-17'
+
+        with freeze_time('2020-03-18'):
+            self.request_1.invalidate_cache()
+            self.assertEqual(self.request_1.deadline_state, 'overdue')
+
+            self.request_1.stage_id = self.stage_sent
+            self.request_1.stage_id = self.stage_confirmed
+            self.request_1.invalidate_cache()
+            self.assertEqual(self.request_1.deadline_state, 'overdue')
+
+        with freeze_time('2020-03-19'):
+            self.request_1.invalidate_cache()
+            self.assertEqual(self.request_1.deadline_state, 'overdue')
+
+    @mute_logger('odoo.sql_db')
+    def test_20_request_type_name_uniq(self):
+        Model = self.env['request.type']
+
+        # Test name uniq constraint
+        data1 = dict(code='TEST-CODE-1', name='Test Type Name 42')
+        data2 = dict(code='TEST-CODE-2', name='Test Type Name 42')
+
+        Model.create(dict(data1))
+        with self.assertRaises(IntegrityError):
+            Model.create(dict(data2))
+
+    @mute_logger('odoo.sql_db')
+    def test_30_request_type_code_uniq(self):
+        Model = self.env['request.type']
+
+        # Test code uniq constraints
+        data1 = dict(code='TEST-CODE-4', name='Test Type Name 44')
+        data2 = dict(code='TEST-CODE-4', name='Test Type Name 45')
+
+        Model.create(dict(data1))
+        with self.assertRaises(IntegrityError):
+            Model.create(dict(data2))
+
+    @mute_logger('odoo.sql_db')
+    def test_40_request_type_code_ascii(self):
+        Model = self.env['request.type']
+
+        # Test code uniq constraints
+        data1 = dict(code='TEST-CODE-4', name='Test Type Name 44')
+        data2 = dict(code='Тестовий-код-5', name='Test Type Name 45')
+
+        Model.create(dict(data1))
+        with self.assertRaises(IntegrityError):
+            Model.create(dict(data2))

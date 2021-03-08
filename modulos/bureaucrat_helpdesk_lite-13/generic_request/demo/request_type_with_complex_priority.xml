@@ -12,6 +12,12 @@
             This is demo request type to demonstrate complex priority.
             This priority is automatically computed from impact and Urgency.
         </field>
+        <field name="use_timesheet" eval="True"/>
+        <field name="timesheet_activity_ids" eval="[
+            (4, ref('request_timesheet_activity_coding')),
+            (4, ref('request_timesheet_activity_analysis')),
+            (4, ref('request_timesheet_activity_call')),
+        ]"/>
     </record>
 
     <!-- Stages -->
@@ -56,5 +62,7 @@
         <field name="impact">1</field>
         <field name="urgency">2</field>
         <field name="request_text">This is demo request with complex priority</field>
+        <field name="date_created" eval="time.strftime('%Y-%m-05 %H:%M:%S')"/>
+        <field name="deadline_date" eval="time.strftime('%Y-%m-%d')"/>
     </record>
 </odoo>

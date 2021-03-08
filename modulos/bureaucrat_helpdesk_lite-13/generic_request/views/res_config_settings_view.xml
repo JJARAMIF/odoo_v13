@@ -24,7 +24,6 @@
                     <field name="need_install_generic_assignment_team" invisible="1"/>
                     <field name="need_install_generic_request_assignment" invisible="1"/>
                     <field name="need_install_generic_request_action" invisible="1"/>
-                    <field name="need_install_generic_request_action_condition" invisible="1"/>
                     <field name="need_install_generic_request_action_project" invisible="1"/>
                     <field name="need_install_generic_request_action_subrequest" invisible="1"/>
                     <field name="need_install_generic_request_sla" invisible="1"/>
@@ -36,12 +35,26 @@
                     <field name="need_install_generic_request_reopen_as" invisible="1"/>
                     <field name="need_install_generic_request_route_auto" invisible="1"/>
                     <field name="need_install_generic_request_service" invisible="1"/>
-                    <field name="need_install_generic_request_tag" invisible="1"/>
                     <field name="need_install_generic_request_mail" invisible="1"/>
-                    <field name="need_install_generic_request_api" invisible="1"/>
                     <field name="need_install_generic_request_survey" invisible="1"/>
                     <field name="need_install_generic_request_action_survey" invisible="1"/>
                     <field name="need_install_generic_request_action_tag" invisible="1"/>
+                    <field name="need_install_generic_request_invoicing" invisible="1"/>
+                    <field name="need_install_generic_request_action_invoice" invisible="1"/>
+                    <field name="need_install_crnd_wsd_broadcast" invisible="1"/>
+                    <field name="need_install_crnd_wsd_legal" invisible="1"/>
+                    <field name="need_install_generic_request_sla_priority" invisible="1"/>
+                    <field name="need_install_generic_request_sla_service" invisible="1"/>
+                    <field name="need_install_generic_request_sale" invisible="1"/>
+                    <field name="need_install_generic_request_crm" invisible="1"/>
+                    <field name="need_install_generic_request_calendar" invisible="1"/>
+                    <field name="need_install_generic_request_action_priority" invisible="1"/>
+                    <field name="need_install_generic_request_action_assignment" invisible="1"/>
+                    <field name="need_install_generic_request_weight" invisible="1"/>
+                    <field name="need_install_crnd_mail_chatter_send_composer" invisible="1"/>
+                    <field name="need_install_crnd_mail_composer_chat_history" invisible="1"/>
+                    <field name="need_install_crnd_mail_composer_template_tree" invisible="1"/>
+                    <field name="need_install_generic_request_web_conference" invisible="1"/>
                    <!-- end -->
 
                     <h2>Global settings</h2>
@@ -67,6 +80,30 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="request_mail_suggest_partner"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="request_mail_suggest_partner"/>
+                                <div class="text-muted">
+                                    Show request's Partner as suggested recipient when sending new message via chatter.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="group_request_show_stat_on_kanban_views"
+                                       string="Show request stat on kanban views"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="group_request_show_stat_on_kanban_views"/>
+                                <div class="text-muted">
+                                    If enabled then users will see request statistics on kanban views
+                                    of request related models like: Request Type, Request Category, etc
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="row mt16 o_settings_container">
@@ -74,6 +111,7 @@
                             <b>Note</b>: Setting the checkboxes will automatically install additional modules that provide selected functionality. Inactive checkbox means you don't have the required module in your system. You can download it from Odoo marketplace individually or as part of a bundle. Look at the <a href="https://crnd.pro/product-comparison" target="_blank">Product comparison table</a> to see which modules are included in each bundle.
                         </div>
                     </div>
+
                     <h2>Automated Actions</h2>
                     <div class="row mt16 o_settings_container">
                         <div class="col-xs-12 col-md-6 o_setting_box">
@@ -89,34 +127,12 @@
                                 <div>
                                     Part of the following bundles:
                                     <div class="btn-group btn-group-xs">
-                                        <a class="btn-xs btn-info btn-left" role="button" href="https://www.odoo.com/apps/modules/12.0/bureaucrat_helpdesk_ultimate/" target="_blank">Helpdesk Ultimate</a>
-                                        <a class="btn-xs btn-warning btn-right" role="button" href="https://www.odoo.com/apps/modules/12.0/bureaucrat_servicedesk_ultimate/" target="_blank">Service Desk Ultimate</a>
+                                        <a class="btn-xs btn-info btn-left" role="button" href="https://www.odoo.com/apps/modules/13.0/bureaucrat_helpdesk_ultimate/" target="_blank">Helpdesk Ultimate</a>
+                                        <a class="btn-xs btn-warning btn-right" role="button" href="https://www.odoo.com/apps/modules/13.0/bureaucrat_servicedesk_ultimate/" target="_blank">Service Desk Ultimate</a>
                                     </div>
                                 </div>
                                 <div attrs="{'invisible': [('need_install_generic_request_action', '=', False)]}">
-                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/12.0/generic_request_action/" target="_blank">Download</a> from Odoo Market.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-md-6 o_setting_box">
-                            <div class="o_setting_left_pane">
-                                <field name="module_generic_request_action_condition" attrs="{'readonly': [('need_install_generic_request_action_condition', '=', True)]}"/>
-                            </div>
-                            <div class="o_setting_right_pane">
-                                <label for="module_generic_request_action_condition"/>
-                                <a class="btn-xs btn-docs" role="button" href="https://crnd.pro/doc-bureaucrat-itsm/11.0/en/Generic_Request_Conditional_Actions_admin_eng/" target="_blank">Docs</a>
-                                <div class="text-muted">
-                                    Make request actions conditional
-                                </div>
-                                <div>
-                                    Part of the following bundles:
-                                    <div class="btn-group btn-group-xs">
-                                        <a class="btn-xs btn-info btn-left" role="button" href="https://www.odoo.com/apps/modules/12.0/bureaucrat_helpdesk_ultimate/" target="_blank">Helpdesk Ultimate</a>
-                                        <a class="btn-xs btn-warning btn-right" role="button" href="https://www.odoo.com/apps/modules/12.0/bureaucrat_servicedesk_ultimate/" target="_blank">Service Desk Ultimate</a>
-                                    </div>
-                                </div>
-                                <div attrs="{'invisible': [('need_install_generic_request_action_condition', '=', False)]}">
-                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/12.0/generic_request_action_condition/" target="_blank">Download</a> from Odoo Market.
+                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/13.0/generic_request_action/" target="_blank">Download</a> from Odoo Market.
                                 </div>
                             </div>
                         </div>
@@ -133,12 +149,12 @@
                                 <div>
                                     Part of the following bundles:
                                     <div class="btn-group btn-group-xs">
-                                        <a class="btn-xs btn-info btn-left" role="button" href="https://www.odoo.com/apps/modules/12.0/bureaucrat_helpdesk_ultimate/" target="_blank">Helpdesk Ultimate</a>
-                                        <a class="btn-xs btn-warning btn-right" role="button" href="https://www.odoo.com/apps/modules/12.0/bureaucrat_servicedesk_ultimate/" target="_blank">Service Desk Ultimate</a>
+                                        <a class="btn-xs btn-info btn-left" role="button" href="https://www.odoo.com/apps/modules/13.0/bureaucrat_helpdesk_ultimate/" target="_blank">Helpdesk Ultimate</a>
+                                        <a class="btn-xs btn-warning btn-right" role="button" href="https://www.odoo.com/apps/modules/13.0/bureaucrat_servicedesk_ultimate/" target="_blank">Service Desk Ultimate</a>
                                     </div>
                                 </div>
                                 <div attrs="{'invisible': [('need_install_generic_request_action_subrequest', '=', False)]}">
-                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/12.0/generic_request_action_subrequest/" target="_blank">Download</a> from Odoo Market.
+                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/13.0/generic_request_action_subrequest/" target="_blank">Download</a> from Odoo Market.
                                 </div>
                             </div>
                         </div>
@@ -154,26 +170,60 @@
                                 <div>
                                     Part of the following bundles:
                                     <div class="btn-group btn-group-xs">
-                                        <a class="btn-xs btn-info btn-left" role="button" href="https://www.odoo.com/apps/modules/12.0/bureaucrat_helpdesk_ultimate/" target="_blank">Helpdesk Ultimate</a>
-                                        <a class="btn-xs btn-warning btn-right" role="button" href="https://www.odoo.com/apps/modules/12.0/bureaucrat_servicedesk_ultimate/" target="_blank">Service Desk Ultimate</a>
+                                        <a class="btn-xs btn-info btn-left" role="button" href="https://www.odoo.com/apps/modules/13.0/bureaucrat_helpdesk_ultimate/" target="_blank">Helpdesk Ultimate</a>
+                                        <a class="btn-xs btn-warning btn-right" role="button" href="https://www.odoo.com/apps/modules/13.0/bureaucrat_servicedesk_ultimate/" target="_blank">Service Desk Ultimate</a>
                                     </div>
                                 </div>
                                 <div attrs="{'invisible': [('need_install_generic_request_action_project', '=', False)]}">
-                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/12.0/generic_request_action_project/" target="_blank">Download</a> from Odoo Market.
+                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/13.0/generic_request_action_project/" target="_blank">Download</a> from Odoo Market.
                                 </div>
                             </div>
                         </div>
                         <div class="col-xs-12 col-md-6 o_setting_box">
                             <div class="o_setting_left_pane">
-                                <field name="module_generic_request_action_survey" attrs="{'readonly': [('need_install_generic_request_action_survey', '=', True)]}"/>
+                                <field name="module_generic_request_action_invoice" attrs="{'readonly': [('need_install_generic_request_action_invoice', '=', True)]}"/>
                             </div>
                             <div class="o_setting_right_pane">
-                                <label for="module_generic_request_action_survey"/>
+                                <label for="module_generic_request_action_invoice"/>
                                 <div class="text-muted">
-                                    Send surveys using automated actions
+                                    Automatically create invoices for requests
                                 </div>
-                                <div attrs="{'invisible': [('need_install_generic_request_action_survey', '=', False)]}">
-                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/11.0/generic_request_action_survey/" target="_blank">Download</a> from Odoo Market.
+                                <div>
+                                    Part of the following bundles:
+                                    <div class="btn-group btn-group-xs">
+                                        <a class="btn-xs btn-info btn-left" role="button"
+                                            href="https://www.odoo.com/apps/modules/13.0/bureaucrat_helpdesk_ultimate/" target="_blank">Helpdesk Ultimate</a>
+                                        <a class="btn-xs btn-warning btn-right" role="button"
+                                            href="https://www.odoo.com/apps/modules/13.0/bureaucrat_servicedesk_ultimate/" target="_blank">Service Desk Ultimate</a>
+                                    </div>
+                                </div>
+                                <div attrs="{'invisible': [('need_install_generic_request_action_invoice', '=', False)]}">
+                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/13.0/generic_request_action_invoice/" target="_blank">Download</a> from Odoo Market.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="module_generic_request_action_priority"
+                                    attrs="{'readonly': [('need_install_generic_request_action_priority', '=', True)]}"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="module_generic_request_action_priority"/>
+                                <div class="text-muted">
+                                    Set urgency, impact, or priority directly, depending on settings.
+                                </div>
+                                <div>
+                                    Part of the following bundles:
+                                    <div class="btn-group btn-group-xs">
+                                        <a class="btn-xs btn-info btn-left" role="button"
+                                            href="https://www.odoo.com/apps/modules/13.0/bureaucrat_helpdesk_ultimate/" target="_blank">Helpdesk Ultimate</a>
+                                        <a class="btn-xs btn-warning btn-right" role="button"
+                                            href="https://www.odoo.com/apps/modules/13.0/bureaucrat_servicedesk_ultimate/" target="_blank">Service Desk Ultimate</a>
+                                    </div>
+                                </div>
+                                <div attrs="{'invisible': [('need_install_generic_request_action_priority', '=', False)]}">
+                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd"
+                                        role="button" href="https://www.odoo.com/apps/modules/13.0/generic_request_action_priority/" target="_blank">Download</a> from Odoo Market.
                                 </div>
                             </div>
                         </div>
@@ -186,8 +236,56 @@
                                 <div class="text-muted">
                                     Automatically add / remove tags
                                 </div>
+                                <div>
+                                    Part of the following bundles:
+                                    <div class="btn-group btn-group-xs">
+                                        <a class="btn-xs btn-info btn-left" role="button"
+                                            href="https://www.odoo.com/apps/modules/13.0/bureaucrat_helpdesk_ultimate/" target="_blank">Helpdesk Ultimate</a>
+                                        <a class="btn-xs btn-warning btn-right" role="button"
+                                            href="https://www.odoo.com/apps/modules/13.0/bureaucrat_servicedesk_ultimate/" target="_blank">Service Desk Ultimate</a>
+                                    </div>
+                                </div>
                                 <div attrs="{'invisible': [('need_install_generic_request_action_tag', '=', False)]}">
-                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/11.0/generic_request_action_tag/" target="_blank">Download</a> from Odoo Market.
+                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/13.0/generic_request_action_tag/" target="_blank">Download</a> from Odoo Market.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="module_generic_request_action_survey" attrs="{'readonly': [('need_install_generic_request_action_survey', '=', True)]}"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="module_generic_request_action_survey"/>
+                                <div class="text-muted">
+                                    Send surveys using automated actions
+                                </div>
+                                <div>
+                                    Part of the following bundles:
+                                    <div class="btn-group btn-group-xs">
+                                        <a class="btn-xs btn-info btn-left" role="button"
+                                            href="https://www.odoo.com/apps/modules/13.0/bureaucrat_helpdesk_ultimate/" target="_blank">Helpdesk Ultimate</a>
+                                        <a class="btn-xs btn-warning btn-right" role="button"
+                                            href="https://www.odoo.com/apps/modules/13.0/bureaucrat_servicedesk_ultimate/" target="_blank">Service Desk Ultimate</a>
+                                    </div>
+                                </div>
+                                <div attrs="{'invisible': [('need_install_generic_request_action_survey', '=', False)]}">
+                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/13.0/generic_request_action_survey/" target="_blank">Download</a> from Odoo Market.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="module_generic_request_action_assignment"
+                                    attrs="{'readonly': [('need_install_generic_request_action_assignment', '=', True)]}"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="module_generic_request_action_assignment"/>
+                                <div class="text-muted">
+                                    Use Generic Assignments in request actions.
+                                </div>
+                                <div attrs="{'invisible': [('need_install_generic_request_action_assignment', '=', False)]}">
+                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd"
+                                        role="button" href="https://www.odoo.com/apps/modules/13.0/generic_request_action_assignment/" target="_blank">Download</a> from Odoo Market.
                                 </div>
                             </div>
                         </div>
@@ -207,12 +305,12 @@
                                 <div>
                                     Part of the following bundles:
                                     <div class="btn-group btn-group-xs">
-                                        <a class="btn-xs btn-info btn-left" role="button" href="https://www.odoo.com/apps/modules/12.0/bureaucrat_helpdesk_pro/" target="_blank">Helpdesk Pro</a>
-                                        <a class="btn-xs btn-warning btn-right" role="button" href="https://www.odoo.com/apps/modules/12.0/bureaucrat_servicedesk_pro/" target="_blank">Service Desk Pro</a>
+                                        <a class="btn-xs btn-info btn-left" role="button" href="https://www.odoo.com/apps/modules/13.0/bureaucrat_helpdesk_pro/" target="_blank">Helpdesk Pro</a>
+                                        <a class="btn-xs btn-warning btn-right" role="button" href="https://www.odoo.com/apps/modules/13.0/bureaucrat_servicedesk_pro/" target="_blank">Service Desk Pro</a>
                                     </div>
                                 </div>
                                 <div attrs="{'invisible': [('need_install_generic_request_sla', '=', False)]}">
-                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/12.0/generic_request_sla/" target="_blank">Download</a> from Odoo Market.
+                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/13.0/generic_request_sla/" target="_blank">Download</a> from Odoo Market.
                                 </div>
                             </div>
                         </div>
@@ -229,12 +327,57 @@
                                 <div>
                                     Part of the following bundles:
                                     <div class="btn-group btn-group-xs">
-                                        <a class="btn-xs btn-info btn-left" role="button" href="https://www.odoo.com/apps/modules/12.0/bureaucrat_helpdesk_pro/" target="_blank">Helpdesk Pro</a>
-                                        <a class="btn-xs btn-warning btn-right" role="button" href="https://www.odoo.com/apps/modules/12.0/bureaucrat_servicedesk_pro/" target="_blank">Service Desk Pro</a>
+                                        <a class="btn-xs btn-info btn-left" role="button" href="https://www.odoo.com/apps/modules/13.0/bureaucrat_helpdesk_pro/" target="_blank">Helpdesk Pro</a>
+                                        <a class="btn-xs btn-warning btn-right" role="button" href="https://www.odoo.com/apps/modules/13.0/bureaucrat_servicedesk_pro/" target="_blank">Service Desk Pro</a>
                                     </div>
                                 </div>
                                 <div attrs="{'invisible': [('need_install_generic_request_sla_log', '=', False)]}">
-                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/12.0/generic_request_sla_log/" target="_blank">Download</a> from Odoo Market.
+                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/13.0/generic_request_sla_log/" target="_blank">Download</a> from Odoo Market.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="module_generic_request_sla_priority" attrs="{'readonly': [('need_install_generic_request_sla_priority', '=', True)]}"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="module_generic_request_sla_priority"/>
+                                <div class="text-muted">
+                                    Set different time limits for one rule of SLA for requests with different priority.
+                                </div>
+                                <div>
+                                    Part of the following bundles:
+                                    <div class="btn-group btn-group-xs">
+                                        <a class="btn-xs btn-info btn-left" role="button" href="https://www.odoo.com/apps/modules/13.0/bureaucrat_helpdesk_pro/" target="_blank">Helpdesk Pro</a>
+                                        <a class="btn-xs btn-warning btn-right" role="button" href="https://www.odoo.com/apps/modules/13.0/bureaucrat_servicedesk_pro/" target="_blank">Service Desk Pro</a>
+                                    </div>
+                                </div>
+                                <div attrs="{'invisible': [('need_install_generic_request_sla_priority', '=', False)]}">
+                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd"
+                                        role="button"
+                                        href="https://www.odoo.com/apps/modules/13.0/generic_request_sla_priority/" target="_blank">Download</a> from Odoo Market.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="module_generic_request_sla_service" attrs="{'readonly': [('need_install_generic_request_sla_service', '=', True)]}"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="module_generic_request_sla_service"/>
+                                <div class="text-muted">
+                                    Specify different SLA limit and warn times per service.
+                                </div>
+                                <div>
+                                    Part of the following bundles:
+                                    <div class="btn-group btn-group-xs">
+                                        <a class="btn-xs btn-warning btn-rnd"
+                                            role="button" href="https://www.odoo.com/apps/modules/13.0/bureaucrat_servicedesk_pro/" target="_blank">Service Desk Pro</a>
+                                    </div>
+                                </div>
+                                <div attrs="{'invisible': [('need_install_generic_request_sla_service', '=', False)]}">
+                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd"
+                                        role="button" href="https://www.odoo.com/apps/modules/13.0/generic_request_sla_service/" target="_blank">Download</a> from Odoo Market.
                                 </div>
                             </div>
                         </div>
@@ -254,11 +397,11 @@
                                 <div>
                                     Part of the following bundles:
                                     <div class="btn-group btn-group-xs">
-                                        <a class="btn-xs btn-warning btn-rnd" role="button" href="https://www.odoo.com/apps/modules/12.0/bureaucrat_servicedesk_ultimate/" target="_blank">Service Desk Ultimate</a>
+                                        <a class="btn-xs btn-warning btn-rnd" role="button" href="https://www.odoo.com/apps/modules/13.0/bureaucrat_servicedesk_ultimate/" target="_blank">Service Desk Ultimate</a>
                                     </div>
                                 </div>
                                 <div attrs="{'invisible': [('need_install_generic_request_assignment', '=', False)]}">
-                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/12.0/generic_request_assignment/" target="_blank">Download</a> from Odoo Market.
+                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/13.0/generic_request_assignment/" target="_blank">Download</a> from Odoo Market.
                                 </div>
                             </div>
                         </div>
@@ -275,11 +418,11 @@
                                 <div>
                                     Part of the following bundles:
                                     <div class="btn-group btn-group-xs">
-                                        <a class="btn-xs btn-warning btn-rnd" role="button" href="https://www.odoo.com/apps/modules/12.0/bureaucrat_servicedesk_ultimate/" target="_blank">Service Desk Ultimate</a>
+                                        <a class="btn-xs btn-warning btn-rnd" role="button" href="https://www.odoo.com/apps/modules/13.0/bureaucrat_servicedesk_ultimate/" target="_blank">Service Desk Ultimate</a>
                                     </div>
                                 </div>
                                 <div attrs="{'invisible': [('need_install_generic_assignment_hr', '=', False)]}">
-                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/12.0/generic_assignment_hr/" target="_blank">Download</a> from Odoo Market.
+                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/13.0/generic_assignment_hr/" target="_blank">Download</a> from Odoo Market.
                                 </div>
                             </div>
                         </div>
@@ -296,15 +439,116 @@
                                 <div>
                                     Part of the following bundles:
                                     <div class="btn-group btn-group-xs">
-                                        <a class="btn-xs btn-warning btn-rnd" role="button" href="https://www.odoo.com/apps/modules/12.0/bureaucrat_servicedesk_ultimate/" target="_blank">Service Desk Ultimate</a>
+                                        <a class="btn-xs btn-warning btn-rnd" role="button" href="https://www.odoo.com/apps/modules/13.0/bureaucrat_servicedesk_ultimate/" target="_blank">Service Desk Ultimate</a>
                                     </div>
                                 </div>
                                 <div attrs="{'invisible': [('need_install_generic_assignment_team', '=', False)]}">
-                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/12.0/generic_assignment_team/" target="_blank">Download</a> from Odoo Market.
+                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/13.0/generic_assignment_team/" target="_blank">Download</a> from Odoo Market.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="module_generic_request_action_assignment"
+                                    attrs="{'readonly': [('need_install_generic_assignment_team', '=', True)]}"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="module_generic_request_action_assignment"/>
+                                <div class="text-muted">
+                                    Module allows to use Generic Assignments in request actions.
+                                </div>
+                                <div attrs="{'invisible': [('need_install_generic_request_action_assignment', '=', False)]}">
+                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd"
+                                        role="button"
+                                        href="https://www.odoo.com/apps/modules/13.0/generic_request_action_assignment/"
+                                        target="_blank">Download</a> from Odoo Market.
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <h2>Web Service Desk</h2>
+                    <div class="row mt16 o_settings_container">
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="module_crnd_wsd_broadcast"
+                                    attrs="{'readonly': [('need_install_crnd_wsd_broadcast', '=', True)]}"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="module_crnd_wsd_broadcast"/>
+                                <div class="text-muted">
+                                    Use broadcast messages on the Service Desk.
+                                </div>
+                                <div attrs="{'invisible': [('need_install_crnd_wsd_broadcast', '=', False)]}">
+                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd"
+                                        role="button" href="https://www.odoo.com/apps/modules/13.0/crnd_wsd_broadcast/"
+                                        target="_blank">Download</a> from Odoo Market.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="module_crnd_wsd_legal"
+                                    attrs="{'readonly': [('need_install_crnd_wsd_legal', '=', True)]}"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="module_crnd_wsd_legal"/>
+                                <div class="text-muted">
+                                    Add ability to require user to accept terms and conditions before he could send request.
+                                </div>
+                                <div attrs="{'invisible': [('need_install_crnd_wsd_legal', '=', False)]}">
+                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd"
+                                        role="button" href="https://www.odoo.com/apps/modules/13.0/crnd_wsd_legal/"
+                                        target="_blank">Download</a> from Odoo Market.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h2>Mail</h2>
+                    <div class="row mt16 o_settings_container">
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="module_crnd_mail_chatter_send_composer" attrs="{'readonly': [('need_install_crnd_mail_chatter_send_composer', '=', True)]}"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="module_crnd_mail_chatter_send_composer"/>
+                                <div class="text-muted">
+                                    Allows to set a default view for sending a message to chatter.
+                                </div>
+                                <div attrs="{'invisible': [('need_install_crnd_mail_chatter_send_composer', '=', False)]}">
+                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/13.0/crnd_mail_chatter_send_composer/" target="_blank">Download</a> from Odoo Market.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="module_crnd_mail_composer_chat_history" attrs="{'readonly': [('need_install_crnd_mail_composer_chat_history', '=', True)]}"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="module_crnd_mail_composer_chat_history"/>
+                                <div class="text-muted">
+                                    Show chat history directly in the composer view.
+                                </div>
+                                <div attrs="{'invisible': [('need_install_crnd_mail_composer_chat_history', '=', False)]}">
+                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/13.0/crnd_mail_composer_chat_history/" target="_blank">Download</a> from Odoo Market.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="module_crnd_mail_composer_template_tree" attrs="{'readonly': [('need_install_crnd_mail_composer_template_tree', '=', True)]}"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="module_crnd_mail_composer_template_tree"/>
+                                <div class="text-muted">
+                                    Add a tree-like list of available templates for the message composer.
+                                </div>
+                                <div attrs="{'invisible': [('need_install_crnd_mail_composer_template_tree', '=', False)]}">
+                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/13.0/crnd_mail_composer_template_tree/" target="_blank">Download</a> from Odoo Market.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <h2>Other</h2>
                     <div class="row mt16 o_settings_container">
                         <div class="col-xs-12 col-md-6 o_setting_box">
@@ -320,12 +564,12 @@
                                 <div>
                                     Part of the following bundles:
                                     <div class="btn-group btn-group-xs">
-                                        <a class="btn-xs btn-info btn-left" role="button" href="https://www.odoo.com/apps/modules/12.0/bureaucrat_helpdesk_plus/" target="_blank">Helpdesk Plus</a>
-                                        <a class="btn-xs btn-warning btn-right" role="button" href="https://www.odoo.com/apps/modules/12.0/bureaucrat_servicedesk_plus/" target="_blank">Service Desk Plus</a>
+                                        <a class="btn-xs btn-info btn-left" role="button" href="https://www.odoo.com/apps/modules/13.0/bureaucrat_helpdesk_plus/" target="_blank">Helpdesk Plus</a>
+                                        <a class="btn-xs btn-warning btn-right" role="button" href="https://www.odoo.com/apps/modules/13.0/bureaucrat_servicedesk_plus/" target="_blank">Service Desk Plus</a>
                                     </div>
                                 </div>
                                 <div attrs="{'invisible': [('need_install_generic_request_field', '=', False)]}">
-                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/12.0/generic_request_field/" target="_blank">Download</a> from Odoo Market.
+                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/13.0/generic_request_field/" target="_blank">Download</a> from Odoo Market.
                                 </div>
                             </div>
                         </div>
@@ -342,12 +586,12 @@
                                 <div>
                                     Part of the following bundles:
                                     <div class="btn-group btn-group-xs">
-                                        <a class="btn-xs btn-info btn-left" role="button" href="https://www.odoo.com/apps/modules/12.0/bureaucrat_helpdesk_ultimate/" target="_blank">Helpdesk Ultimate</a>
-                                        <a class="btn-xs btn-warning btn-right" role="button" href="https://www.odoo.com/apps/modules/12.0/bureaucrat_servicedesk_ultimate/" target="_blank">Service Desk Ultimate</a>
+                                        <a class="btn-xs btn-info btn-left" role="button" href="https://www.odoo.com/apps/modules/13.0/bureaucrat_helpdesk_ultimate/" target="_blank">Helpdesk Ultimate</a>
+                                        <a class="btn-xs btn-warning btn-right" role="button" href="https://www.odoo.com/apps/modules/13.0/bureaucrat_servicedesk_ultimate/" target="_blank">Service Desk Ultimate</a>
                                     </div>
                                 </div>
                                 <div attrs="{'invisible': [('need_install_generic_request_parent', '=', False)]}">
-                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/12.0/generic_request_parent/" target="_blank">Download</a> from Odoo Market.
+                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/13.0/generic_request_parent/" target="_blank">Download</a> from Odoo Market.
                                 </div>
                             </div>
                         </div>
@@ -364,12 +608,12 @@
                                 <div>
                                     Part of the following bundles:
                                     <div class="btn-group btn-group-xs">
-                                        <a class="btn-xs btn-info btn-left" role="button" href="https://www.odoo.com/apps/modules/12.0/bureaucrat_helpdesk_ultimate/" target="_blank">Helpdesk Ultimate</a>
-                                        <a class="btn-xs btn-warning btn-right" role="button" href="https://www.odoo.com/apps/modules/12.0/bureaucrat_servicedesk_ultimate/" target="_blank">Service Desk Ultimate</a>
+                                        <a class="btn-xs btn-info btn-left" role="button" href="https://www.odoo.com/apps/modules/13.0/bureaucrat_helpdesk_ultimate/" target="_blank">Helpdesk Ultimate</a>
+                                        <a class="btn-xs btn-warning btn-right" role="button" href="https://www.odoo.com/apps/modules/13.0/bureaucrat_servicedesk_ultimate/" target="_blank">Service Desk Ultimate</a>
                                     </div>
                                 </div>
                                 <div attrs="{'invisible': [('need_install_generic_request_related_doc', '=', False)]}">
-                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/12.0/generic_request_related_doc/" target="_blank">Download</a> from Odoo Market.
+                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/13.0/generic_request_related_doc/" target="_blank">Download</a> from Odoo Market.
                                 </div>
                             </div>
                         </div>
@@ -386,12 +630,12 @@
                                 <div>
                                     Part of the following bundles:
                                     <div class="btn-group btn-group-xs">
-                                        <a class="btn-xs btn-info btn-left" role="button" href="https://www.odoo.com/apps/modules/12.0/bureaucrat_helpdesk_ultimate/" target="_blank">Helpdesk Ultimate</a>
-                                        <a class="btn-xs btn-warning btn-right" role="button" href="https://www.odoo.com/apps/modules/12.0/bureaucrat_servicedesk_ultimate/" target="_blank">Service Desk Ultimate</a>
+                                        <a class="btn-xs btn-info btn-left" role="button" href="https://www.odoo.com/apps/modules/13.0/bureaucrat_helpdesk_ultimate/" target="_blank">Helpdesk Ultimate</a>
+                                        <a class="btn-xs btn-warning btn-right" role="button" href="https://www.odoo.com/apps/modules/13.0/bureaucrat_servicedesk_ultimate/" target="_blank">Service Desk Ultimate</a>
                                     </div>
                                 </div>
                                 <div attrs="{'invisible': [('need_install_generic_request_related_requests', '=', False)]}">
-                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/12.0/generic_request_related_requests/" target="_blank">Download</a> from Odoo Market.
+                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/13.0/generic_request_related_requests/" target="_blank">Download</a> from Odoo Market.
                                 </div>
                             </div>
                         </div>
@@ -408,12 +652,12 @@
                                 <div>
                                     Part of the following bundles:
                                     <div class="btn-group btn-group-xs">
-                                        <a class="btn-xs btn-info btn-left" role="button" href="https://www.odoo.com/apps/modules/12.0/bureaucrat_helpdesk_ultimate/" target="_blank">Helpdesk Ultimate</a>
-                                        <a class="btn-xs btn-warning btn-right" role="button" href="https://www.odoo.com/apps/modules/12.0/bureaucrat_servicedesk_ultimate/" target="_blank">Service Desk Ultimate</a>
+                                        <a class="btn-xs btn-info btn-left" role="button" href="https://www.odoo.com/apps/modules/13.0/bureaucrat_helpdesk_ultimate/" target="_blank">Helpdesk Ultimate</a>
+                                        <a class="btn-xs btn-warning btn-right" role="button" href="https://www.odoo.com/apps/modules/13.0/bureaucrat_servicedesk_ultimate/" target="_blank">Service Desk Ultimate</a>
                                     </div>
                                 </div>
                                 <div attrs="{'invisible': [('need_install_generic_request_reopen_as', '=', False)]}">
-                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/12.0/generic_request_reopen_as/" target="_blank">Download</a> from Odoo Market.
+                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/13.0/generic_request_reopen_as/" target="_blank">Download</a> from Odoo Market.
                                 </div>
                             </div>
                         </div>
@@ -430,12 +674,12 @@
                                 <div>
                                     Part of the following bundles:
                                     <div class="btn-group btn-group-xs">
-                                        <a class="btn-xs btn-info btn-left" role="button" href="https://www.odoo.com/apps/modules/12.0/bureaucrat_helpdesk_ultimate/" target="_blank">Helpdesk Ultimate</a>
-                                        <a class="btn-xs btn-warning btn-right" role="button" href="https://www.odoo.com/apps/modules/12.0/bureaucrat_servicedesk_ultimate/" target="_blank">Service Desk Ultimate</a>
+                                        <a class="btn-xs btn-info btn-left" role="button" href="https://www.odoo.com/apps/modules/13.0/bureaucrat_helpdesk_ultimate/" target="_blank">Helpdesk Ultimate</a>
+                                        <a class="btn-xs btn-warning btn-right" role="button" href="https://www.odoo.com/apps/modules/13.0/bureaucrat_servicedesk_ultimate/" target="_blank">Service Desk Ultimate</a>
                                     </div>
                                 </div>
                                 <div attrs="{'invisible': [('need_install_generic_request_route_auto', '=', False)]}">
-                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/12.0/generic_request_route_auto_project/" target="_blank">Download</a> from Odoo Market.
+                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/13.0/generic_request_route_auto/" target="_blank">Download</a> from Odoo Market.
                                 </div>
                             </div>
                         </div>
@@ -447,37 +691,17 @@
                                 <label for="module_generic_request_service"/>
                                 <a class="btn-xs btn-docs" role="button" href="https://crnd.pro/doc-bureaucrat-itsm/11.0/en/Generic_Request_Service_admin_eng/" target="_blank">Docs</a>
                                 <div class="text-muted">
+                                    Represents incident management system for logging, recording, tracking, addressing, handling and archiving issues that occur in daily routine.
+                                    Also provides website user interface for Service Desk.
                                 </div>
                                 <div>
                                     Part of the following bundles:
                                     <div class="btn-group btn-group-xs">
-                                        <a class="btn-xs btn-warning btn-rnd" role="button" href="https://www.odoo.com/apps/modules/12.0/bureaucrat_servicedesk/" target="_blank">Service Desk</a>
+                                        <a class="btn-xs btn-warning btn-rnd" role="button" href="https://www.odoo.com/apps/modules/13.0/bureaucrat_servicedesk/" target="_blank">Service Desk</a>
                                     </div>
                                 </div>
                                 <div attrs="{'invisible': [('need_install_generic_request_service', '=', False)]}">
-                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/12.0/generic_request_service/" target="_blank">Download</a> from Odoo Market.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-md-6 o_setting_box">
-                            <div class="o_setting_left_pane">
-                                <field name="module_generic_request_tag" attrs="{'readonly': [('need_install_generic_request_tag', '=', True)]}"/>
-                            </div>
-                            <div class="o_setting_right_pane">
-                                <label for="module_generic_request_tag"/>
-                                <a class="btn-xs btn-docs" role="button" href="https://crnd.pro/doc-bureaucrat-itsm/11.0/en/Generic_Request_Tags_admin_eng/" target="_blank">Docs</a>
-                                <div class="text-muted">
-                                    Add tags to generic requests
-                                </div>
-                                <div>
-                                    Part of the following bundles:
-                                    <div class="btn-group btn-group-xs">
-                                        <a class="btn-xs btn-info btn-left" role="button" href="https://www.odoo.com/apps/modules/12.0/bureaucrat_helpdesk_plus/" target="_blank">Helpdesk Plus</a>
-                                        <a class="btn-xs btn-warning btn-right" role="button" href="https://www.odoo.com/apps/modules/12.0/bureaucrat_servicedesk_plus/" target="_blank">Service Desk Plus</a>
-                                    </div>
-                                </div>
-                                <div attrs="{'invisible': [('need_install_generic_request_tag', '=', False)]}">
-                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/12.0/generic_request_tag/" target="_blank">Download</a> from Odoo Market.
+                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/13.0/generic_request_service/" target="_blank">Download</a> from Odoo Market.
                                 </div>
                             </div>
                         </div>
@@ -494,40 +718,138 @@
                                 <div>
                                     Part of the following bundles:
                                     <div class="btn-group btn-group-xs">
-                                        <a class="btn-xs btn-info btn-left" role="button" href="https://www.odoo.com/apps/modules/12.0/bureaucrat_helpdesk_plus/" target="_blank">Helpdesk Plus</a>
-                                        <a class="btn-xs btn-warning btn-right" role="button" href="https://www.odoo.com/apps/modules/12.0/bureaucrat_servicedesk_plus/" target="_blank">Service Desk Plus</a>
+                                        <a class="btn-xs btn-info btn-left" role="button" href="https://www.odoo.com/apps/modules/13.0/bureaucrat_helpdesk_plus/" target="_blank">Helpdesk Plus</a>
+                                        <a class="btn-xs btn-warning btn-right" role="button" href="https://www.odoo.com/apps/modules/13.0/bureaucrat_servicedesk_plus/" target="_blank">Service Desk Plus</a>
                                     </div>
                                 </div>
                                 <div attrs="{'invisible': [('need_install_generic_request_mail', '=', False)]}">
-                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/12.0/generic_request_mail/" target="_blank">Download</a> from Odoo Market.
+                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/13.0/generic_request_mail/" target="_blank">Download</a> from Odoo Market.
                                 </div>
                             </div>
                         </div>
                         <div class="col-xs-12 col-md-6 o_setting_box">
                             <div class="o_setting_left_pane">
-                                <field name="module_generic_request_api" attrs="{'readonly': [('need_install_generic_request_api', '=', True)]}"/>
+                                <field name="module_generic_request_sale"
+                                    attrs="{'readonly': [('need_install_generic_request_sale', '=', True)]}"/>
                             </div>
                             <div class="o_setting_right_pane">
-                                <label for="module_generic_request_api"/>
+                                <label for="module_generic_request_sale"/>
                                 <div class="text-muted">
-                                    Use API endpoints to create requests (<i>Alpha</i>)
+                                    Add ability to create requests when sale order confirmed.
                                 </div>
-                                <div attrs="{'invisible': [('need_install_generic_request_api', '=', False)]}">
-                                    Addon requires installation. <a class="btn-xs btn-success btn-rnd" role="button" href="https://crnd.pro/requests/new/step/service" target="_blank">Contact us</a> to download.
+                                <div>
+                                    Part of the following bundles:
+                                    <div class="btn-group btn-group-xs">
+                                        <a class="btn-xs btn-info btn-left" role="button"
+                                            href="https://www.odoo.com/apps/modules/13.0/bureaucrat_helpdesk_ultimate/" target="_blank">Helpdesk Ultimate</a>
+                                        <a class="btn-xs btn-warning btn-right" role="button"
+                                            href="https://www.odoo.com/apps/modules/13.0/bureaucrat_servicedesk_ultimate/" target="_blank">Service Desk Ultimate</a>
+                                    </div>
+                                </div>
+                                <div attrs="{'invisible': [('need_install_generic_request_sale', '=', False)]}">
+                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button"
+                                        href="https://www.odoo.com/apps/modules/13.0/generic_request_sale/" target="_blank">Download</a> from Odoo Market.
                                 </div>
                             </div>
                         </div>
                         <div class="col-xs-12 col-md-6 o_setting_box">
                             <div class="o_setting_left_pane">
-                                <field name="module_generic_request_survey" attrs="{'readonly': [('need_install_generic_request_survey', '=', True)]}"/>
+                                <field name="module_generic_request_crm"
+                                    attrs="{'readonly': [('need_install_generic_request_crm', '=', True)]}"/>
                             </div>
                             <div class="o_setting_right_pane">
-                                <label for="module_generic_request_survey"/>
+                                <label for="module_generic_request_crm"/>
                                 <div class="text-muted">
-                                    Send surveys from request
+                                    Add ability to create requests directtly from CRM Leads.
                                 </div>
-                                <div attrs="{'invisible': [('need_install_generic_request_survey', '=', False)]}">
-                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/11.0/generic_request_survey/" target="_blank">Download</a> from Odoo Market.
+                                <div>
+                                    Part of the following bundles:
+                                    <div class="btn-group btn-group-xs">
+                                        <a class="btn-xs btn-info btn-left" role="button"
+                                            href="https://www.odoo.com/apps/modules/13.0/bureaucrat_helpdesk_pro/" target="_blank">Helpdesk Pro</a>
+                                        <a class="btn-xs btn-warning btn-right" role="button"
+                                            href="https://www.odoo.com/apps/modules/13.0/bureaucrat_servicedesk_pro/" target="_blank">Service Desk Pro</a>
+                                    </div>
+                                </div>
+                                <div attrs="{'invisible': [('need_install_generic_request_crm', '=', False)]}">
+                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button"
+                                        href="https://www.odoo.com/apps/modules/13.0/generic_request_crm/" target="_blank">Download</a> from Odoo Market.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="module_generic_request_calendar"
+                                    attrs="{'readonly': [('need_install_generic_request_calendar', '=', True)]}"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="module_generic_request_calendar"/>
+                                <div class="text-muted">
+                                    Easilly schedule meetings related to request.
+                                </div>
+                                <div>
+                                    Part of the following bundles:
+                                    <div class="btn-group btn-group-xs">
+                                        <a class="btn-xs btn-info btn-left" role="button"
+                                            href="https://www.odoo.com/apps/modules/13.0/bureaucrat_helpdesk_plus/" target="_blank">Helpdesk Plus</a>
+                                        <a class="btn-xs btn-warning btn-right" role="button"
+                                            href="https://www.odoo.com/apps/modules/13.0/bureaucrat_servicedesk_plus/" target="_blank">Service Desk Plus</a>
+                                    </div>
+                                </div>
+                                <div attrs="{'invisible': [('need_install_generic_request_calendar', '=', False)]}">
+                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button"
+                                        href="https://www.odoo.com/apps/modules/13.0/generic_request_calendar/" target="_blank">Download</a> from Odoo Market.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="module_generic_request_invoicing" attrs="{'readonly': [('need_install_generic_request_invoicing', '=', True)]}"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="module_generic_request_invoicing"/>
+                                <div class="text-muted">
+                                    Easilly create invoices for time tracked on request.
+                                </div>
+                                <div>
+                                    Part of the following bundles:
+                                    <div class="btn-group btn-group-xs">
+                                        <a class="btn-xs btn-info btn-left" role="button"
+                                            href="https://www.odoo.com/apps/modules/13.0/bureaucrat_helpdesk_pro/" target="_blank">Helpdesk Pro</a>
+                                        <a class="btn-xs btn-warning btn-right" role="button"
+                                            href="https://www.odoo.com/apps/modules/13.0/bureaucrat_servicedesk_pro/" target="_blank">Service Desk Pro</a>
+                                    </div>
+                                </div>
+                                <div attrs="{'invisible': [('need_install_generic_request_invoicing', '=', False)]}">
+                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/13.0/generic_request_invoicing/" target="_blank">Download</a> from Odoo Market.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="module_generic_request_weight" attrs="{'readonly': [('need_install_generic_request_weight', '=', True)]}"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="module_generic_request_weight"/>
+                                <div class="text-muted">
+                                    Allows automatically sort requests by predefined rules depending on SLA, Priority, Kanban State, Request Type, etc.
+                                </div>
+                                <div attrs="{'invisible': [('need_install_generic_request_weight', '=', False)]}">
+                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/13.0/generic_request_weight/" target="_blank">Download</a> from Odoo Market.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="module_generic_request_web_conference" attrs="{'readonly': [('need_install_generic_request_web_conference', '=', True)]}"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="module_generic_request_web_conference"/>
+                                <div class="text-muted">
+                                    Easily launch web-conference / web meeting related to request / ticket.
+                                </div>
+                                <div attrs="{'invisible': [('need_install_generic_request_web_conference', '=', False)]}">
+                                    Addon requires installation. <a class="btn-xs btn-primary btn-rnd" role="button" href="https://www.odoo.com/apps/modules/13.0/generic_request_web_conference/" target="_blank">Download</a> from Odoo Market.
                                 </div>
                             </div>
                         </div>

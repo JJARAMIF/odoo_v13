@@ -12,3 +12,6 @@ class ResCompany(models.Model):
     request_event_auto_remove = fields.Boolean(
         string='Automatically remove events older then',
         default=True)
+
+    request_mail_suggest_partner = fields.Boolean(
+        string="Suggest request partner for mail recipients")

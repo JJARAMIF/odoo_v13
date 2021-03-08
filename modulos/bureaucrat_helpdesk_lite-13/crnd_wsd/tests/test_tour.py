@@ -1,10 +1,9 @@
 from odoo import exceptions, tools
-from odoo.tests.common import post_install, at_install
+from odoo.tests.common import tagged
 from .phantom_common import TestPhantomTour
 
 
-@post_install(True)
-@at_install(False)
+@tagged('post_install', '-at_install')
 class TestWebsiteServiceDesk(TestPhantomTour):
 
     def setUp(self):
@@ -22,13 +21,12 @@ class TestWebsiteServiceDesk(TestPhantomTour):
     def test_tour_request_actions_ok(self):
         self.assertIn(self.group_portal, self.user_demo.groups_id)
 
-        with self.phantom_env as env:
-            env.ref(
-                'crnd_wsd.request_stage_route_type_generic_sent_to_closed'
-            ).write({
-                'website_published': True,
-                'require_response': True,
-            })
+        self.env.ref(
+            'crnd_wsd.request_stage_route_type_generic_sent_to_closed'
+        ).write({
+            'website_published': True,
+            'require_response': True,
+        })
 
         self._test_phantom_tour(
             '/', 'crnd_wsd_tour_request_actions_ok',
@@ -37,14 +35,13 @@ class TestWebsiteServiceDesk(TestPhantomTour):
     def test_tour_request_actions_redirect(self):
         self.assertIn(self.group_portal, self.user_demo.groups_id)
 
-        with self.phantom_env as env:
-            env.ref(
-                'crnd_wsd.request_stage_route_type_generic_sent_to_closed'
-            ).write({
-                'website_published': True,
-                'require_response': False,
-                'website_extra_action': 'redirect_to_my',
-            })
+        self.env.ref(
+            'crnd_wsd.request_stage_route_type_generic_sent_to_closed'
+        ).write({
+            'website_published': True,
+            'require_response': False,
+            'website_extra_action': 'redirect_to_my',
+        })
 
         self._test_phantom_tour(
             '/', 'crnd_wsd_tour_request_actions_redirect',
@@ -53,10 +50,9 @@ class TestWebsiteServiceDesk(TestPhantomTour):
     def test_tour_request_actions_not_allowed(self):
         self.assertIn(self.group_portal, self.user_demo.groups_id)
 
-        with self.phantom_env as env:
-            req_send = env.ref(
-                'crnd_wsd.request_stage_route_type_generic_draft_to_sent')
-            req_send.allowed_user_ids = env.ref('base.user_root')
+        req_send = self.env.ref(
+            'crnd_wsd.request_stage_route_type_generic_draft_to_sent')
+        req_send.allowed_user_ids = self.env.ref('base.user_root')
 
         self._test_phantom_tour(
             '/', 'crnd_wsd_tour_request_actions_not_allowed',
@@ -87,26 +83,26 @@ class TestWebsiteServiceDesk(TestPhantomTour):
         self.assertTrue(
             new_requests.request_text.startswith(
                 u'<h1>Test generic request (modified)</h1>'))
+        channel_website = self.env.ref(
+            'generic_request.request_channel_website')
+        self.assertEqual(new_requests.channel_id, channel_website)
 
     def test_tour_request_new_default_text(self):
-        with self.phantom_env as env:
-            env.ref(
-                'crnd_wsd.request_type_generic'
-            ).write({
-                'default_request_text': 'Default text',
-            })
+        self.env.ref(
+            'crnd_wsd.request_type_generic'
+        ).write({
+            'default_request_text': 'Default text',
+        })
         self._test_phantom_tour(
             '/', 'crnd_wsd_tour_request_new_default_text',
             login=self.user_demo.login)
 
     def test_tour_public_user(self):
-        with self.phantom_env as env:
-            env.user.company_id.request_wsd_public_ui_visibility = 'restrict'
+        self.env.user.company_id.request_wsd_public_ui_visibility = 'restrict'
         self._test_phantom_tour(
             '/', 'crnd_wsd_tour_request_public_user')
 
     def test_tour_public_user_redirect(self):
-        with self.phantom_env as env:
-            env.user.company_id.request_wsd_public_ui_visibility = 'redirect'
+        self.env.user.company_id.request_wsd_public_ui_visibility = 'redirect'
         self._test_phantom_tour(
             '/', 'crnd_wsd_tour_request_public_user_redirect')

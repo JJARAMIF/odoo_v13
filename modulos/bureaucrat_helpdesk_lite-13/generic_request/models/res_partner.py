@@ -30,17 +30,14 @@ class ResPartner(models.Model):
 
     def action_show_related_requests(self):
         self.ensure_one()
-        action = self.env.ref(
-            'generic_request.action_request_window').read()[0]
-        action.update({
-            'domain': expression.OR([
+        return self.env['generic.mixin.get.action'].get_action_by_xmlid(
+            'generic_request.action_request_window',
+            domain=expression.OR([
                 [('partner_id', 'in', self.ids)],
                 [('author_id', 'in', self.ids)],
             ]),
-            'context': dict(
+            context=dict(
                 self.env.context,
                 default_partner_id=self.commercial_partner_id.id,
                 default_author_id=self.id,
-            ),
-        })
-        return action
+            ))

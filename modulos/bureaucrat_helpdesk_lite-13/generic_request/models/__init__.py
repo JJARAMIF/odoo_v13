@@ -13,4 +13,9 @@ from . import (
     res_config_settings,
     res_company,
     request_event_category,
+    request_creation_template,
+    generic_tag_category,
+    request_timesheet_activity,
+    request_timesheet_line,
+    request_channel,
 )

@@ -19,6 +19,14 @@
         <field name="category_ids"
                eval="[(6, 0, [ref('generic_request.request_category_demo_general')])]"/>
         <field name="kind_id" ref="request_kind_demo"/>
+        <field name="tag_category_ids"
+               eval="[(4, ref('generic_request.tag_category_severity')), (4, ref('generic_request.tag_category_priority')), (4, ref('generic_request.tag_category_platform'))]"/>
+        <field name="use_timesheet" eval="True"/>
+        <field name="timesheet_activity_ids" eval="[
+            (4, ref('request_timesheet_activity_coding')),
+            (4, ref('request_timesheet_activity_analysis')),
+            (4, ref('request_timesheet_activity_call')),
+        ]"/>
     </record>
 
     <!-- Simple request type stages -->
@@ -120,6 +128,10 @@
         <field name="created_by_id" ref="user_demo_request"/>
         <field name="partner_id" ref="base.res_partner_2"/>
         <field name="category_id" ref="request_category_demo_general"/>
+        <field name="tag_ids"
+               eval="[(4, ref('generic_request.tag_severity_medium')), (4, ref('generic_request.tag_platform_linux')), (4, ref('generic_request.tag_platform_mac'))]"/>
+        <field name="date_created" eval="time.strftime('%Y-%m-16 %H:%M:%S')"/>
+        <field name="deadline_date" eval="time.strftime('%Y-%m-21')"/>
     </record>
 
     <record id="request_request_type_simple_demo_long_text_1" model="request.request">
@@ -230,5 +242,62 @@
         <field name="partner_id" ref="base.res_partner_2"/>
         <field name="category_id" ref="request_category_demo_general"/>
         <field name="user_id" ref="base.demo_user0"/>
+        <field name="date_created" eval="time.strftime('%Y-%m-01 %H:%M:%S')"/>
+        <field name="deadline_date" eval="time.strftime('%Y-%m-01')"/>
+    </record>
+
+    <record id="request_request_type_simple_demo_email_no_author" model="request.request">
+        <field name="request_text"><![CDATA[
+            <h1>All images disapeare from our site</h1>
+
+            <p>Hi,</p>
+            <p>Today in the morning all images disapeared from our site.
+               Please, check and fix it as fast as possible!</p>
+        ]]></field>
+        <field name="type_id" ref="request_type_simple"/>
+        <field name="created_by_id" ref="user_demo_request"/>
+        <field name="author_id" eval="False"/>
+        <field name="partner_id" eval="False"/>
+        <field name="email_from">jkington1@archive.org</field>
+        <field name="author_name">Joey	Kington</field>
+        <field name="category_id" ref="request_category_demo_general"/>
+        <field name="priority">5</field>
+        <field name="date_created" eval="time.strftime('%Y-%m-09 %H:%M:%S')"/>
+    </record>
+    <record id="request_request_type_simple_demo_2" model="request.request">
+        <field name="request_text"><![CDATA[
+        <p>Your module "CRND Web List Popover Widget" provides cool
+           feature to truncate ""text field"", but concerning the popover,
+           there is a regressive situation.</p>
+
+        <p>For exemple, for a product description (<field name= "name")
+           on a sale order line, native odoo text popover will display
+           (line by line, respecting layout)</p>
+
+        <p>But your module will display not respecting newlines and layout.</p>
+        ]]></field>
+        <field name="type_id" ref="request_type_simple"/>
+        <field name="created_by_id" ref="user_demo_request"/>
+        <field name="partner_id" ref="base.res_partner_4"/>
+        <field name="category_id" ref="request_category_demo_general"/>
+        <field name="email_cc">lquixley3@ning.com,"Julita Haddeston &lt;jhaddeston5@cafepress.com&gt;"</field>
+        <field name="date_created" eval="time.strftime('%Y-%m-11 %H:%M:%S')"/>
+        <field name="deadline_date" eval="time.strftime('%Y-%m-18')"/>
+    </record>
+    <record id="request_request_type_simple_demo_3" model="request.request">
+        <field name="request_text"><![CDATA[
+            <h1>Please, install Skype on my computer</h1>
+            <p>Hello dear,</p>
+            <p>I need skype to be installed on my computer to be able to work remotely.</p>
+            <p>Thanks</p>
+        ]]></field>
+        <field name="type_id" ref="request_type_simple"/>
+        <field name="created_by_id" ref="user_demo_request"/>
+        <field name="author_id" ref="base.res_partner_address_7"/>
+        <field name="partner_id" ref="base.res_partner_4"/>
+        <field name="category_id" ref="request_category_demo_general"/>
+        <field name="email_cc">lquixley3@ning.com,"Julita Haddeston &lt;jhaddeston5@cafepress.com&gt;"</field>
+        <field name="date_created" eval="time.strftime('%Y-%m-12 %H:%M:%S')"/>
+        <field name="deadline_date" eval="time.strftime('%Y-%m-18')"/>
     </record>
 </odoo>

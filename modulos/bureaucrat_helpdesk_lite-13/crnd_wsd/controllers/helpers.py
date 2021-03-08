@@ -1,8 +1,7 @@
-import io
 import json
 import base64
 import logging
-from PIL import Image
+from werkzeug.urls import url_quote
 
 from odoo import http, tools, _
 from odoo.tools import ustr
@@ -15,40 +14,40 @@ _logger = logging.getLogger(__name__)
 
 class WSDHelpers(WSDControllerMixin, http.Controller):
 
-    def _optimize_image(self, image_data, disable_optimization=False):
-        try:
-            image = Image.open(io.BytesIO(image_data))
-            w, h = image.size
-            if w * h >= 42e6:  # Nokia Lumia 1020 photo resolution
-                raise ValueError(_(
-                    u"Image size excessive, uploaded images "
-                    u"must be smaller than 42 million pixel"))
-            if not disable_optimization and image.format in ('PNG', 'JPEG'):
-                image_data = tools.image_save_for_web(image)
-        except IOError:  # pylint: disable=except-pass
-            pass
-        return image_data
-
     @http.route('/crnd_wsd/file_upload', type='http',
                 auth='user', methods=['POST'], website=True)
     def wsd_upload_file(self, upload, alt='File', filename=None,
                         is_image=False, **post_data):
-        Attachments = request.env['ir.attachment']
+        Attachments = request.env['ir.attachment'].sudo()
+        attachment_data = {
+            'description': alt,
+            'name': filename or 'upload',
+            'public': False,
+        }
 
-        # TODO: bound attachemnts to request
+        if post_data.get('request_id'):
+            try:
+                attachment_data['res_id'] = int(post_data.get('request_id'))
+            except (ValueError, TypeError):
+                _logger.debug(
+                    "Cannon convert request_id %r",
+                    post_data.get('request_id'),
+                    exc_info=True)
+            else:
+                attachment_data['res_model'] = 'request.request'
+
         try:
             data = upload.read()
+            data_base64 = base64.b64encode(data)
 
             if is_image:
-                data = self._optimize_image(data, disable_optimization=False)
+                data_base64 = tools.image_process(
+                    data_base64, verify_resolution=True)
 
-            attachment = Attachments.create({
-                'name': alt,
-                'datas': base64.b64encode(data),
-                'datas_fname': filename or 'upload',
-                'public': True,   # TODO: should it be public?
-                # 'res_model': 'ir.ui.view',
-            })
+            attachment = Attachments.create(dict(
+                attachment_data,
+                datas=data_base64,
+            ))
         except Exception as e:
             _logger.exception("Failed to upload file to attachment")
             message = ustr(e)
@@ -58,15 +57,20 @@ class WSDHelpers(WSDControllerMixin, http.Controller):
                 'message': message,
             })
 
+        attachment.generate_access_token()
         if is_image:
-            attachment_url = "/web/image/%d/%s" % (
-                attachment.id,
-                attachment.datas_fname,
+            attachment_url = "%s?access_token=%s" % (
+                url_quote("/web/image/%d/%s" % (
+                    attachment.id,
+                    attachment.name)),
+                attachment.sudo().access_token,
             )
         else:
-            attachment_url = "/web/content/%d/%s" % (
-                attachment.id,
-                attachment.datas_fname,
+            attachment_url = "%s?access_token=%s&download" % (
+                url_quote("/web/content/%d/%s" % (
+                    attachment.id,
+                    attachment.name)),
+                attachment.sudo().access_token,
             )
 
         return json.dumps({

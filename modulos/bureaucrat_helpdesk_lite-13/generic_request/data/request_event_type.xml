@@ -67,5 +67,25 @@
         <field name="code">urgency-changed</field>
         <field name="category_id" ref="event_category_request_events"/>
     </record>
+    <record id="request_event_type_deadline_changed" model="request.event.type">
+        <field name="name">Deadline Changed</field>
+        <field name="code">deadline-changed</field>
+        <field name="category_id" ref="event_category_request_events"/>
+    </record>
+    <record id="request_event_type_kanban_state_changed" model="request.event.type">
+        <field name="name">Kanban State Changed</field>
+        <field name="code">kanban-state-changed</field>
+        <field name="category_id" ref="event_category_request_events"/>
+    </record>
+    <record id="request_event_type_timetracking_start_work" model="request.event.type">
+        <field name="name">Timetracking / Start Work</field>
+        <field name="code">timetracking-start-work</field>
+        <field name="category_id" ref="event_category_request_events"/>
+    </record>
+    <record id="request_event_type_timetracking_stop_work" model="request.event.type">
+        <field name="name">Timetracking / Stop Work</field>
+        <field name="code">timetracking-stop-work</field>
+        <field name="category_id" ref="event_category_request_events"/>
+    </record>
 </odoo>
 

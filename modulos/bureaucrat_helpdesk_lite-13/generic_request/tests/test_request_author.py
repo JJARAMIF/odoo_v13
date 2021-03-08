@@ -133,6 +133,99 @@ class TestRequestAuthor(RequestCase):
         self.assertEqual(req.partner_id, partner)
         self.assertEqual(req.author_id, author)
 
+    def test_author_compute_user_implicit(self):
+        partner = self.env.ref('base.res_partner_3')
+        author = self.env.ref('base.res_partner_address_5')
+        self.assertEqual(author.parent_id, partner)
+        self.assertEqual(author.commercial_partner_id, partner)
+
+        self.demo_user.partner_id = author
+        self.assertEqual(self.demo_user.partner_id, author)
+        self.assertEqual(self.demo_user.commercial_partner_id, partner)
+
+        self.simple_type.message_subscribe(self.demo_user.partner_id.ids)
+
+        request = self.env['request.request'].with_user(
+            self.demo_user
+        ).create({
+            'type_id': self.simple_type.id,
+            'category_id': self.general_category.id,
+            'request_text': 'Test request',
+        })
+        self.assertEqual(request.partner_id, partner)
+        self.assertEqual(request.author_id, author)
+        self.assertIn(author, request.message_partner_ids)
+
+    def test_author_compute_user_context_1(self):
+        partner = self.env.ref('base.res_partner_3')
+        author = self.env.ref('base.res_partner_address_5')
+        self.assertEqual(author.parent_id, partner)
+        self.assertEqual(author.commercial_partner_id, partner)
+
+        self.demo_user.partner_id = author
+        self.assertEqual(self.demo_user.partner_id, author)
+        self.assertEqual(self.demo_user.commercial_partner_id, partner)
+
+        self.simple_type.message_subscribe(self.demo_user.partner_id.ids)
+
+        request = self.env['request.request'].with_user(
+            self.demo_user
+        ).with_context(
+            default_author_id=partner.id
+        ).create({
+            'type_id': self.simple_type.id,
+            'category_id': self.general_category.id,
+            'request_text': 'Test request',
+        })
+        self.assertEqual(request.created_by_id, self.demo_user)
+        self.assertFalse(request.partner_id)
+        self.assertEqual(request.author_id, partner)
+        notification_msg = request.message_ids.filtered(
+            lambda r: r.subject == (
+                'Request %s successfully created!' % request.name))
+        self.assertTrue(notification_msg)
+        self.assertEqual(
+            notification_msg[0].author_id,
+            self.demo_user.partner_id)
+
+    def test_author_compute_user_explicit(self):
+        partner = self.env.ref('base.res_partner_3')
+        author = self.env.ref('base.res_partner_address_5')
+        self.assertEqual(author.parent_id, partner)
+        self.assertEqual(author.commercial_partner_id, partner)
+
+        self.demo_user.partner_id = author
+        self.assertEqual(self.demo_user.partner_id, author)
+        self.assertEqual(self.demo_user.commercial_partner_id, partner)
+
+        self.simple_type.message_subscribe(self.demo_user.partner_id.ids)
+
+        request = self.env['request.request'].create({
+            'type_id': self.simple_type.id,
+            'category_id': self.general_category.id,
+            'request_text': 'Test request',
+            'created_by_id': self.demo_user.id,
+        })
+        self.assertEqual(request.author_id, author)
+        self.assertEqual(request.partner_id, partner)
+        self.assertIn(author, request.message_partner_ids)
+
+    def test_author_compute_author_only(self):
+        partner = self.env.ref('base.res_partner_3')
+        author = self.env.ref('base.res_partner_address_5')
+        self.assertEqual(author.parent_id, partner)
+        self.assertEqual(author.commercial_partner_id, partner)
+
+        request = self.env['request.request'].create({
+            'type_id': self.simple_type.id,
+            'category_id': self.general_category.id,
+            'request_text': 'Test request',
+            'author_id': author.id,
+        })
+        self.assertEqual(request.partner_id, partner)
+        self.assertEqual(request.author_id, author)
+        self.assertIn(author, request.message_partner_ids)
+
     def test_compute_partner_of_demo_request(self):
         self.assertEqual(
             self.env.ref(

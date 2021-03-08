@@ -7,7 +7,7 @@
 
     'author': "Center of Research and Development",
     'website': "https://crnd.pro",
-    'version': '13.0.1.0.14',
+    'version': '13.0.1.2.0',
     'category': 'Helpdesk',
 
     # any module necessary for this one to work correctly
@@ -25,7 +25,7 @@
 
     'installable': True,
     'application': True,
-    'license': 'OPL-1',
+    'license': 'LGPL-3',
 
     'price': 0.0,
     'currency': 'EUR',

@@ -9,6 +9,7 @@ class RequestStage(models.Model):
     _name = "request.stage"
     _inherit = [
         'generic.mixin.name_with_code',
+        'generic.mixin.track.changes',
     ]
     _description = "Request Stage"
     _order = "sequence"
@@ -104,27 +105,33 @@ class RequestStage(models.Model):
                 rec.res_bg_color = DEFAULT_BG_COLOR
                 rec.res_label_color = DEFAULT_LABEL_COLOR
 
+    @api.model
+    def _add_missing_default_values(self, values):
+        res = super(RequestStage, self)._add_missing_default_values(values)
+        if 'sequence' not in values and res.get('request_type_id'):
+            stages = self.search(
+                [('request_type_id', '=', res['request_type_id'])])
+            if stages:
+                res['sequence'] = max(s.sequence for s in stages) + 1
+        return res
+
     def action_show_incoming_routes(self):
         self.ensure_one()
-        action = self.env.ref(
-            'generic_request.action_request_stage_incoming_routes')
-        result = action.read()[0]
-        result['context'] = {
-            'default_stage_to_id': self.id,
-            'default_request_type_id': self.request_type_id.id,
-        }
-        return result
+        return self.env['generic.mixin.get.action'].get_action_by_xmlid(
+            'generic_request.action_request_stage_incoming_routes',
+            context={
+                'default_stage_to_id': self.id,
+                'default_request_type_id': self.request_type_id.id,
+            })
 
     def action_show_outgoing_routes(self):
         self.ensure_one()
-        action = self.env.ref(
-            'generic_request.action_request_stage_outgoing_routes')
-        result = action.read()[0]
-        result['context'] = {
-            'default_stage_from_id': self.id,
-            'default_request_type_id': self.request_type_id.id,
-        }
-        return result
+        return self.env['generic.mixin.get.action'].get_action_by_xmlid(
+            'generic_request.action_request_stage_outgoing_routes',
+            context={
+                'default_stage_from_id': self.id,
+                'default_request_type_id': self.request_type_id.id,
+            })
 
     def unlink(self):
         messages = []

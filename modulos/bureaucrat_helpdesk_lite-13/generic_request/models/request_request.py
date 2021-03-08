@@ -1,69 +1,22 @@
+# pylint:disable=too-many-lines
 import logging
-
+from datetime import datetime
 from odoo import models, fields, api, tools, _, exceptions, SUPERUSER_ID
-
+from odoo.addons.generic_mixin import pre_write, post_write
+from odoo import http
+from odoo.osv import expression
+from ..tools.utils import html2text
+from ..constants import (
+    TRACK_FIELD_CHANGES,
+    REQUEST_TEXT_SAMPLE_MAX_LINES,
+    KANBAN_READONLY_FIELDS,
+    MAIL_REQUEST_TEXT_TMPL,
+    AVAILABLE_PRIORITIES,
+    AVAILABLE_IMPACTS,
+    AVAILABLE_URGENCIES,
+    PRIORITY_MAP,
+)
 _logger = logging.getLogger(__name__)
-
-
-try:
-    from html2text import HTML2Text
-except ImportError as error:
-    _logger.debug(error)
-
-TRACK_FIELD_CHANGES = set((
-    'stage_id', 'user_id', 'type_id', 'category_id', 'request_text',
-    'partner_id', 'category_id', 'priority', 'impact', 'urgency'))
-REQUEST_TEXT_SAMPLE_MAX_LINES = 3
-KANBAN_READONLY_FIELDS = set(('type_id', 'category_id', 'stage_id'))
-MAIL_REQUEST_TEXT_TMPL = "<h1>%(subject)s</h1>\n<br/>\n<br/>%(body)s"
-
-AVAILABLE_PRIORITIES = [
-    ('0', _('Not set')),
-    ('1', _('Very Low')),
-    ('2', _('Low')),
-    ('3', _('Medium')),
-    ('4', _('High')),
-    ('5', _('Critical'))]
-
-AVAILABLE_IMPACTS = [
-    ('0', _('Not set')),
-    ('1', _('Low')),
-    ('2', _('Medium')),
-    ('3', _('High')),
-]
-
-AVAILABLE_URGENCIES = [
-    ('0', _('Not set')),
-    ('1', _('Low')),
-    ('2', _('Medium')),
-    ('3', _('High')),
-]
-
-# This matrix allows to compute complex priority depending
-# On selected impact and urgency. Inner lists represent impacts,
-# List items represent urgencies. For example: request with
-# low impact(0) and high urgency(2)
-# will have complex_priority PRIORITY_MAP[0][2] = 3
-PRIORITY_MAP = [
-    [0, 1, 2, 3],
-    [1, 1, 2, 3],
-    [2, 2, 3, 4],
-    [3, 3, 4, 5],
-]
-
-
-def html2text(html):
-    """ covert html to text, ignoring images and tables
-    """
-    if not html:
-        return ""
-
-    ht = HTML2Text()
-    ht.ignore_images = True
-    ht.ignore_tables = True
-    ht.ignore_emphasis = True
-    ht.ignore_links = True
-    return ht.handle(html)
 
 
 class RequestRequest(models.Model):
@@ -72,24 +25,26 @@ class RequestRequest(models.Model):
         'mail.thread',
         'mail.activity.mixin',
         'generic.mixin.track.changes',
+        'generic.tag.mixin',
+        'generic.mixin.get.action',
     ]
     _description = 'Request'
     _order = 'date_created DESC'
     _needaction = True
 
     name = fields.Char(
-        required=True, index=True, readonly=True, default="New",
-        copy=False)
+        required=True, index=True, readonly=True, default="New", copy=False)
     help_html = fields.Html(
         "Help", related="type_id.help_html", readonly=True)
-    category_help_html = fields.Html(related='category_id.help_html',
-                                     readonly=True, string="Category help")
+    category_help_html = fields.Html(
+        related='category_id.help_html', readonly=True, string="Category help")
     stage_help_html = fields.Html(
         "Stage help", related="stage_id.help_html", readonly=True)
-    instruction_html = fields.Html(related='type_id.instruction_html',
-                                   readonly=True, string='Instruction')
-    note_html = fields.Html(related='type_id.note_html',
-                            readonly=True, string="Note")
+    instruction_html = fields.Html(
+        related='type_id.instruction_html',
+        readonly=True, string='Instruction')
+    note_html = fields.Html(
+        related='type_id.note_html', readonly=True, string="Note")
 
     # Priority
     _priority = fields.Char(
@@ -97,7 +52,6 @@ class RequestRequest(models.Model):
         default='3',
         string='Priority (Technical)'
     )
-
     priority = fields.Selection(
         selection=AVAILABLE_PRIORITIES,
         track_visibility='onchange',
@@ -116,7 +70,7 @@ class RequestRequest(models.Model):
         index=True,
     )
     is_priority_complex = fields.Boolean(
-        related='type_id.complex_priority'
+        related='type_id.complex_priority', readonly=True,
     )
 
     # Type and stage related fields
@@ -133,10 +87,15 @@ class RequestRequest(models.Model):
         'request.category', 'Category', index=True,
         required=False, ondelete="restrict", track_visibility='onchange',
         help="Category of request")
+    channel_id = fields.Many2one(
+        'request.channel', 'Channel', index=True,
+        required=False,
+        default=lambda self: self.env.ref(
+            'generic_request.request_channel_other', raise_if_not_found=False),
+        help="Channel of request")
     stage_id = fields.Many2one(
         'request.stage', 'Stage', ondelete='restrict',
-        required=True, index=True, track_visibility="onchange",
-        copy=False)
+        required=True, index=True, track_visibility="onchange", copy=False)
     stage_type_id = fields.Many2one(
         'request.stage.type', related="stage_id.type_id", string="Stage Type",
         index=True, readonly=True, store=True)
@@ -148,8 +107,29 @@ class RequestRequest(models.Model):
     closed = fields.Boolean(
         related='stage_id.closed', store=True, index=True, readonly=True)
     can_be_closed = fields.Boolean(
-        compute='_compute_can_be_closed', readonly=True,
-        compute_sudo=False)
+        compute='_compute_can_be_closed', readonly=True)
+    is_assigned = fields.Boolean(
+        compute="_compute_is_assigned",
+        store=True, readonly=True)
+
+    kanban_state = fields.Selection(
+        selection=[
+            ('normal', 'In Progress'),
+            ('blocked', 'Blocked'),
+            ('done', 'Ready for next stage')],
+        required='True',
+        default='normal',
+        track_visibility='onchange',
+        help="A requests kanban state indicates special"
+             " situations affecting it:\n"
+             " * Grey is the default situation\n"
+             " * Red indicates something is preventing the"
+             "progress of this request\n"
+             " * Green indicates the request is ready to be pulled"
+             "to the next stage")
+
+    # 12.0 compatability. required to generate xmlid for this field
+    tag_ids = fields.Many2many()
 
     # Is this request new (does not have ID yet)?
     # This field could be used in domains in views for True and False leafs:
@@ -171,6 +151,9 @@ class RequestRequest(models.Model):
     can_change_category = fields.Boolean(
         compute='_compute_can_change_category', readonly=True,
         compute_sudo=False)
+    can_change_deadline = fields.Boolean(
+        compute='_compute_can_change_deadline', readonly=True,
+        compute_sudo=False)
     next_stage_ids = fields.Many2many(
         'request.stage', compute="_compute_next_stage_ids", readonly=True)
 
@@ -181,7 +164,11 @@ class RequestRequest(models.Model):
         compute="_compute_request_text_sample", track_visibility="always",
         string='Request text')
 
-    # dates+ fields
+    deadline_date = fields.Date('Deadline')
+    deadline_state = fields.Selection(selection=[
+        ('ok', 'Ok'),
+        ('today', 'Today'),
+        ('overdue', 'Overdue')], compute='_compute_deadline_state')
     date_created = fields.Datetime(
         'Created', default=fields.Datetime.now, readonly=True, copy=False)
     date_closed = fields.Datetime('Closed', readonly=True, copy=False)
@@ -189,7 +176,7 @@ class RequestRequest(models.Model):
     date_moved = fields.Datetime('Moved', readonly=True, copy=False)
     created_by_id = fields.Many2one(
         'res.users', 'Created by', readonly=True, ondelete='restrict',
-        default=lambda self: self.env.user,
+        default=lambda self: self.env.user, index=True,
         help="Request was created by this user", copy=False)
     moved_by_id = fields.Many2one(
         'res.users', 'Moved by', readonly=True, ondelete='restrict',
@@ -197,27 +184,38 @@ class RequestRequest(models.Model):
     closed_by_id = fields.Many2one(
         'res.users', 'Closed by', readonly=True, ondelete='restrict',
         copy=False, help="Request was closed by this user")
-
     partner_id = fields.Many2one(
         'res.partner', 'Partner', track_visibility='onchange',
         ondelete='restrict', help="Partner related to this request")
     author_id = fields.Many2one(
-        'res.partner', 'Author', index=True, required=True,
-        ondelete='restrict',
-        track_visibility='onchange',
+        'res.partner', 'Author', index=True, required=False,
+        ondelete='restrict', track_visibility='onchange',
         domain=[('is_company', '=', False)],
         default=lambda self: self.env.user.partner_id,
         help="Author of this request")
     user_id = fields.Many2one(
         'res.users', 'Assigned to',
-        ondelete='restrict', track_visibility='onchange',
+        ondelete='restrict', track_visibility='onchange', index=True,
         help="User responsible for next action on this request.")
 
+    # Email support
+    email_from = fields.Char(
+        'Email', help="Email address of the contact", index=True,
+        readonly=True)
+    email_cc = fields.Text(
+        'Global CC',
+        readonly=True,
+        help="These email addresses will be added to the CC field "
+             "of all inbound and outbound emails for this record "
+             "before being sent. "
+             "Separate multiple email addresses with a comma")
+    author_name = fields.Char(
+        readonly=True,
+        help="Name of author based on incoming email")
+
     message_discussion_ids = fields.One2many(
-        'mail.message', 'res_id',
-        string='Discussion Messages',
-        compute="_compute_message_discussion_ids",
-        store=False, compute_sudo=False)
+        'mail.message', 'res_id', string='Discussion Messages', store=False,
+        compute="_compute_message_discussion_ids", compute_sudo=False)
     original_message_id = fields.Char(
         help='Technical field. '
              'ID of original message that started this request.')
@@ -230,6 +228,7 @@ class RequestRequest(models.Model):
         compute='_compute_instruction_visible', default=False,
         compute_sudo=False)
 
+    # We have to explicitly set compute_sudo to True to avoid access errors
     activity_date_deadline = fields.Date(compute_sudo=True)
 
     # Events
@@ -238,11 +237,79 @@ class RequestRequest(models.Model):
     request_event_count = fields.Integer(
         compute='_compute_request_event_count', readonly=True)
 
+    # Timesheets
+    timesheet_line_ids = fields.One2many(
+        'request.timesheet.line', 'request_id')
+    timesheet_planned_amount = fields.Float(
+        help="Planned time")
+    timesheet_amount = fields.Float(
+        compute='_compute_timesheet_line_data',
+        readonly=True, store=True,
+        help="Time spent")
+    timesheet_remaining_amount = fields.Float(
+        compute='_compute_timesheet_line_data',
+        readonly=True, store=True,
+        help="Remaining time")
+    timesheet_progress = fields.Float(
+        compute='_compute_timesheet_line_data',
+        readonly=True, store=True,
+        help="Request progress, calculated as the ratio of time spent "
+             "to planned time")
+    timesheet_start_status = fields.Selection(
+        [('started', 'Started'),
+         ('not-started', 'Not Started')],
+        compute='_compute_timesheet_start_status',
+        readonly=True)
+    use_timesheet = fields.Boolean(
+        related='type_id.use_timesheet', readonly=True)
+
     _sql_constraints = [
         ('name_uniq',
          'UNIQUE (name)',
          'Request name must be unique.'),
     ]
+
+    @api.model
+    def default_get(self, fields_list):
+        res = super(RequestRequest, self).default_get(fields_list)
+
+        path = http.request.httprequest.path if http.request else False
+        if path and path.startswith('/web') or path == '/web':
+            res.update({'channel_id': self.env.ref(
+                'generic_request.request_channel_web').id})
+        elif path and path.startswith('/xmlrpc') or path == '/xmlrpc':
+            res.update({'channel_id': self.env.ref(
+                'generic_request.request_channel_api').id})
+        elif path and path.startswith('/jsonrpc') or path == '/jsonrpc':
+            res.update({'channel_id': self.env.ref(
+                'generic_request.request_channel_api').id})
+
+        return res
+
+    @api.depends('deadline_date', 'date_closed')
+    def _compute_deadline_state(self):
+        now = datetime.now().date()
+        for rec in self:
+            date_deadline = fields.Date.from_string(
+                rec.deadline_date) if rec.deadline_date else False
+            date_closed = fields.Date.from_string(
+                rec.date_closed) if rec.date_closed else False
+            if not date_deadline:
+                rec.deadline_state = False
+                continue
+
+            if date_closed:
+                if date_closed <= date_deadline:
+                    rec.deadline_state = 'ok'
+                else:
+                    rec.deadline_state = 'overdue'
+            else:
+                if date_deadline > now:
+                    rec.deadline_state = 'ok'
+                elif date_deadline < now:
+                    rec.deadline_state = 'overdue'
+                elif date_deadline == now:
+                    rec.deadline_state = 'today'
 
     @api.depends('message_ids')
     def _compute_message_discussion_ids(self):
@@ -259,12 +326,8 @@ class RequestRequest(models.Model):
     @api.depends('stage_id.route_out_ids.stage_to_id.closed')
     def _compute_can_be_closed(self):
         for record in self:
-            can_be_closed = False
-            for route in record.stage_id.route_out_ids:
-                if route.close:
-                    can_be_closed = True
-                    break
-            record.can_be_closed = can_be_closed
+            record.can_be_closed = any((
+                r.close for r in record.stage_id.route_out_ids))
 
     @api.depends('request_event_ids')
     def _compute_request_event_count(self):
@@ -277,20 +340,20 @@ class RequestRequest(models.Model):
             record.is_new_request = int(not bool(record.id))
 
     def _hook_can_change_request_text(self):
-        """ Can be overridden in other addons
-        """
         self.ensure_one()
         return not self.closed
 
     def _hook_can_change_assignee(self):
-        """ Can be overridden in other addons
-        """
         self.ensure_one()
         return not self.closed
 
     def _hook_can_change_category(self):
         self.ensure_one()
         return self.stage_id == self.sudo().type_id.start_stage_id
+
+    def _hook_can_change_deadline(self):
+        self.ensure_one()
+        return not self.closed
 
     @api.depends('type_id', 'stage_id', 'user_id',
                  'partner_id', 'created_by_id')
@@ -319,6 +382,12 @@ class RequestRequest(models.Model):
     def _compute_can_change_category(self):
         for record in self:
             record.can_change_category = record._hook_can_change_category()
+
+    @api.depends('type_id', 'type_id.start_stage_id', 'stage_id',
+                 'deadline_date')
+    def _compute_can_change_deadline(self):
+        for record in self:
+            record.can_change_deadline = record._hook_can_change_deadline()
 
     def _get_next_stage_route_domain(self):
         self.ensure_one()
@@ -377,6 +446,11 @@ class RequestRequest(models.Model):
             else:
                 rec.priority = rec._priority
 
+    @api.depends('user_id')
+    def _compute_is_assigned(self):
+        for rec in self:
+            rec.is_assigned = bool(rec.user_id)
+
     # When priority is complex, it is computed from impact and urgency
     # We do not need to write it directly from the field
     def _inverse_priority(self):
@@ -421,30 +495,29 @@ class RequestRequest(models.Model):
 
     @api.model
     def _add_missing_default_values(self, values):
-        res = super(RequestRequest, self)._add_missing_default_values(values)
-
-        if not res.get('author_id') and res.get('created_by_id'):
+        if values.get('created_by_id') and 'author_id' not in values:
+            # This is required to be present before super call, because
+            # 'author_id' has it's own default value, and and unless it is set
+            # explicitly, original default value (partner of current user)
+            # will be used.
             create_user = self.env['res.users'].sudo().browse(
-                res['created_by_id'])
-            res.update({
-                'author_id': create_user.partner_id.id,
-            })
+                values['created_by_id'])
+            values = dict(
+                values,
+                author_id=create_user.partner_id.id)
+        res = super(RequestRequest, self)._add_missing_default_values(values)
 
         if res.get('author_id') and 'partner_id' not in values:
             author = self.env['res.partner'].browse(res['author_id'])
             if author.commercial_partner_id != author:
                 res['partner_id'] = author.commercial_partner_id.id
-
         return res
 
     @api.model
     def create(self, vals):
         # Update date_assigned
         if vals.get('user_id'):
-            vals.update({
-                'date_assigned': fields.Datetime.now(),
-            })
-
+            vals['date_assigned'] = fields.Datetime.now()
         if vals.get('type_id', False):
             r_type = self.env['request.type'].browse(vals['type_id'])
             vals = self._create_update_from_type(r_type, vals)
@@ -461,106 +534,88 @@ class RequestRequest(models.Model):
             RequestRequest, self
         )._get_generic_tracking_fields() | TRACK_FIELD_CHANGES
 
-    def _preprocess_write_changes(self, changes):
-        """ Called before write
+    @pre_write('type_id')
+    def _before_type_id_changed(self, changes):
+        raise exceptions.ValidationError(_(
+            'It is not allowed to change request type'))
 
-            This method may be overridden by other addons to add
-            some preprocessing of changes, before write
+    @pre_write('user_id')
+    def _before_user_id_changed(self, changes):
+        new_user = changes['user_id'][1]  # (old_user, new_user)
+        if new_user:
+            return {'date_assigned': fields.Datetime.now()}
+        return {'date_assigned': False}
 
-            :param dict changes: keys are changed field names,
-                                 values are tuples (old_value, new_value)
-            :rtype: dict
-            :return: values to update request with.
-                     These values will be written just after write
-        """
-        vals = super(RequestRequest, self)._preprocess_write_changes(changes)
-
+    @pre_write('stage_id')
+    def _before_stage_id_changed(self, changes):
         Route = self.env['request.stage.route']
-        if 'user_id' in changes:
-            new_user = changes['user_id'][1]  # (old_user, new_user)
-            if new_user:
-                vals['date_assigned'] = fields.Datetime.now()
-            else:
-                vals['date_assigned'] = False
+        old_stage, new_stage = changes['stage_id']
+        route = Route.ensure_route(self, new_stage.id)
+        route.hook_before_stage_change(self)
 
-        if 'stage_id' in changes:
-            old_stage, new_stage = changes['stage_id']
-            route = Route.ensure_route(self, new_stage.id)
-            route.hook_before_stage_change(self)
-            vals['last_route_id'] = route.id
-            vals['date_moved'] = fields.Datetime.now()
-            vals['moved_by_id'] = self.env.user.id
+        vals = {}
+        vals['last_route_id'] = route.id
+        vals['date_moved'] = fields.Datetime.now()
+        vals['moved_by_id'] = self.env.user.id
 
-            if not old_stage.closed and new_stage.closed:
-                vals['date_closed'] = fields.Datetime.now()
-                vals['closed_by_id'] = self.env.user.id
-            elif old_stage.closed and not new_stage.closed:
-                vals['date_closed'] = False
-                vals['closed_by_id'] = False
-
-        if 'type_id' in changes:
-            raise exceptions.ValidationError(_(
-                'It is not allowed to change request type'))
+        if not old_stage.closed and new_stage.closed:
+            vals['date_closed'] = fields.Datetime.now()
+            vals['closed_by_id'] = self.env.user.id
+        elif old_stage.closed and not new_stage.closed:
+            vals['date_closed'] = False
+            vals['closed_by_id'] = False
         return vals
 
-    def _postprocess_write_changes(self, changes):
-        """ Called after write
+    @post_write('stage_id')
+    def _after_stage_id_changed(self, changes):
+        self.last_route_id.hook_after_stage_change(self)
+        old_stage, new_stage = changes['stage_id']
+        event_data = {
+            'route_id': self.last_route_id.id,
+            'old_stage_id': old_stage.id,
+            'new_stage_id': new_stage.id,
+        }
+        if new_stage.closed and not old_stage.closed:
+            self.trigger_event('closed', event_data)
+        elif old_stage.closed and not new_stage.closed:
+            self.trigger_event('reopened', event_data)
+        else:
+            self.trigger_event('stage-changed', event_data)
 
-            This method may be overridden by other modules to add
-            some postprocessing of write.
-            This method does not return any  value.
+    @post_write('user_id')
+    def _after_user_id_changed(self, changes):
+        old_user, new_user = changes['user_id']
+        event_data = {
+            'old_user_id': old_user.id,
+            'new_user_id': new_user.id,
+            'assign_comment': self.env.context.get('assign_comment', False)
+        }
+        if not old_user and new_user:
+            self.trigger_event('assigned', event_data)
+        elif old_user and new_user:
+            self.trigger_event('reassigned', event_data)
+        elif old_user and not new_user:
+            self.trigger_event('unassigned', event_data)
 
-            :param dict changes: keys are changed field names,
-                                 values are tuples (old_value, new_value)
-            :return: None
+    @post_write('request_text')
+    def _after_request_text_changed(self, changes):
+        self.trigger_event('changed', {
+            'old_text': changes['request_text'][0],
+            'new_text': changes['request_text'][1]})
 
-        """
-        res = super(RequestRequest, self)._postprocess_write_changes(changes)
+    @post_write('category_id')
+    def _after_category_id_changed(self, changes):
+        self.trigger_event('category-changed', {
+            'old_category_id': changes['category_id'][0].id,
+            'new_category_id': changes['category_id'][1].id,
+        })
 
-        if 'stage_id' in changes:
-            self.last_route_id.hook_after_stage_change(self)
-
-            # Trigger stage-change related events
-            old_stage, new_stage = changes['stage_id']
-            event_data = {
-                'route_id': self.last_route_id.id,
-                'old_stage_id': old_stage.id,
-                'new_stage_id': new_stage.id,
-            }
-            if new_stage.closed and not old_stage.closed:
-                self.trigger_event('closed', event_data)
-            elif old_stage.closed and not new_stage.closed:
-                self.trigger_event('reopened', event_data)
-            else:
-                self.trigger_event('stage-changed', event_data)
-        if 'user_id' in changes:
-            # Trigger assign-related events
-            old_user, new_user = changes['user_id']
-            event_data = {
-                'old_user_id': old_user.id, 'new_user_id': new_user.id}
-            if not old_user and new_user:
-                self.trigger_event('assigned', event_data)
-            elif old_user and new_user:
-                self.trigger_event('reassigned', event_data)
-            elif old_user and not new_user:
-                self.trigger_event('unassigned', event_data)
-        if 'request_text' in changes:
-            old, new = changes['request_text']
-            self.trigger_event('changed', {
-                'old_text': old,
-                'new_text': new})
-        if 'category_id' in changes:
-            old, new = changes['category_id']
-            self.trigger_event('category-changed', {
-                'old_category_id': old.id,
-                'new_category_id': new.id,
-            })
+    @post_write('priority', 'impact', 'urgency')
+    def _after_priority_changed(self, changes):
         if 'priority' in changes:
-            old, new = changes['priority']
             self.trigger_event('priority-changed', {
-                'old_priority': old,
-                'new_priority': new})
-
+                'old_priority': changes['priority'][0],
+                'new_priority': changes['priority'][1]})
         if 'impact' in changes:
             old, new = changes['impact']
             old_priority = str(
@@ -573,7 +628,6 @@ class RequestRequest(models.Model):
             self.trigger_event('impact-changed', {
                 'old_impact': old,
                 'new_impact': new})
-
         if 'urgency' in changes:
             old, new = changes['urgency']
             old_priority = str(
@@ -586,9 +640,22 @@ class RequestRequest(models.Model):
             self.trigger_event('urgency-changed', {
                 'old_urgency': old,
                 'new_urgency': new})
-        return res
+
+    @post_write('deadline_date')
+    def _after_deadline_changed(self, changes):
+        self.trigger_event('deadline-changed', {
+            'old_deadline': changes['deadline_date'][0],
+            'new_deadline': changes['deadline_date'][1]})
+
+    @post_write('kanban_state')
+    def _after_kanban_state_changed(self, changes):
+        self.trigger_event('kanban-state-changed', {
+            'old_kanban_state': changes['kanban_state'][0],
+            'new_kanban_state': changes['kanban_state'][1]})
 
     def _creation_subtype(self):
+        """ Determine mail subtype for request creation message/notification
+        """
         return self.env.ref('generic_request.mt_request_created')
 
     def _track_subtype(self, init_values):
@@ -689,31 +756,28 @@ class RequestRequest(models.Model):
         return result
 
     def ensure_can_assign(self):
-        self.ensure_one()
-        if self.closed:
-            raise exceptions.UserError(_(
-                "You can not assign this request (%s), "
-                "because this request is closed."
-            ) % self.display_name)
-        if not self.can_change_assignee:
-            raise exceptions.UserError(_(
-                "You can not assign this (%s) request"
-            ) % self.display_name)
+        for record in self:
+            if record.closed:
+                raise exceptions.UserError(_(
+                    "You can not assign this request (%s), "
+                    "because this request is closed."
+                ) % record.display_name)
+            if not record.can_change_assignee:
+                raise exceptions.UserError(_(
+                    "You can not assign this (%s) request"
+                ) % record.display_name)
 
     def action_request_assign(self):
-        self.ensure_one()
         self.ensure_can_assign()
-        action = self.env.ref('generic_request.action_request_wizard_assign')
-        action = action.read()[0]
-        action['context'] = {
-            'default_request_id': self.id,
-        }
-        return action
+        return self.env['generic.mixin.get.action'].get_action_by_xmlid(
+            'generic_request.action_request_wizard_assign',
+            context={'default_request_ids': [(6, 0, self.ids)]})
 
     def action_request_assign_to_me(self):
-        self.ensure_one()
         self.ensure_can_assign()
-        self.user_id = self.env.user
+        self.write({
+            'user_id': self.env.user.id,
+        })
 
     # Default notifications
     def _send_default_notification__get_email_from(self, **kw):
@@ -772,6 +836,19 @@ class RequestRequest(models.Model):
                 partner=partner,
             )
             self_ctx = self.sudo()
+
+            # remove default author from context
+            # This is required to fix bug in generic_request_crm:
+            # when use create new request from lead, and there is default
+            # author specified in context, then all notification messages use
+            # that author as author of message. This way customer notification
+            # has customer as author. Next block of code have to fix
+            # this issue.
+            if self_ctx.env.context.get('default_author_id'):
+                new_ctx = dict(self_ctx.env.context)
+                new_ctx.pop('default_author_id')
+                self_ctx = self_ctx.with_context(new_ctx)
+
             if partner.lang:
                 self_ctx = self_ctx.with_context(lang=partner.sudo().lang)
             message_data = dict(
@@ -867,11 +944,12 @@ class RequestRequest(models.Model):
         """
         return "/mail/view/request/%s" % self.id
 
-    def _notify_get_groups(self):
+    def _notify_get_groups(self, msg_vals=None):
         """ Use custom url for *button_access* in notification emails
         """
         self.ensure_one()
-        groups = super(RequestRequest, self)._notify_get_groups()
+        groups = super(RequestRequest, self)._notify_get_groups(
+            msg_vals=msg_vals)
 
         view_title = _('View Request')
         access_link = self.get_mail_url()
@@ -900,11 +978,20 @@ class RequestRequest(models.Model):
 
     def _message_auto_subscribe_notify(self, partner_ids, template):
         # Disable sending mail to assigne, when request was assigned.
-        # See _postprocess_write_changes
+        # Custom notification will be sent, see _after_user_id_changed method
         return super(
             RequestRequest,
             self.with_context(mail_auto_subscribe_no_notify=True)
         )._message_auto_subscribe_notify(partner_ids, template)
+
+    def _find_emails_from_msg(self, msg):
+        """ Find emais from email message.
+            Check 'to' and 'cc' fields
+
+            :return: List of emails
+        """
+        return tools.email_split(
+            (msg.get('to') or '') + ',' + (msg.get('cc') or ''))
 
     @api.model
     def message_new(self, msg, custom_values=None):
@@ -912,7 +999,8 @@ class RequestRequest(models.Model):
             through message_process.
             This override updates the document according to the email.
         """
-        custom_values = custom_values if custom_values is not None else {}
+        Partner = self.env['res.partner']
+        defaults = dict(custom_values) if custom_values is not None else {}
 
         # Ensure we have message_id
         if not msg.get('message_id'):
@@ -925,11 +1013,13 @@ class RequestRequest(models.Model):
         }
 
         # Update defaults with partner and created_by_id if possible
-        defaults = {
+        defaults.update({
             'name': "###new###",  # Spec name to avoid using subj as req name
             'request_text': request_text,
             'original_message_id': msg['message_id'],
-        }
+            'email_from': msg.get('from', ''),
+            'email_cc': msg.get('cc', ''),
+        })
         author_id = msg.get('author_id')
         if author_id:
             author = self.env['res.partner'].browse(author_id)
@@ -939,23 +1029,66 @@ class RequestRequest(models.Model):
                 defaults['created_by_id'] = author.user_ids[0].id
         else:
             author = False
-        defaults.update(custom_values)
+            defaults['author_id'] = False
+            defaults['partner_id'] = False
+            defaults['author_name'] = Partner._parse_partner_name(
+                msg['from'])[0] if msg.get('from') else False
+
+        defaults.update({'channel_id': self.env.ref(
+            'generic_request.request_channel_email').id})
 
         request = super(RequestRequest, self).message_new(
             msg, custom_values=defaults)
 
         # Find partners from email and subscribe them
-        email_list = tools.email_split(
-            (msg.get('to') or '') + ',' + (msg.get('cc') or ''))
+        email_list = self._find_emails_from_msg(msg)
         partner_ids = request._mail_find_partner_from_emails(
             email_list, force_create=False)
-        partner_ids = [pid for pid in partner_ids if pid]
+        partner_ids = [p.id for p in partner_ids if p]
 
         if author:
             partner_ids += [author.id]
 
         request.message_subscribe(partner_ids)
         return request
+
+    def message_update(self, msg, update_vals=None):
+        # Subscribe partners found in received email
+        email_list = self._find_emails_from_msg(msg)
+        partner_ids = self._mail_find_partner_from_emails(
+            email_list, force_create=False)
+        partner_ids = [p.id for p in partner_ids if p]
+        if partner_ids:
+            self.message_subscribe(partner_ids)
+
+        return super(RequestRequest, self).message_update(
+            msg, update_vals=update_vals)
+
+    def request_add_suggested_recipients(self, recipients):
+        for record in self:
+            if record.author_id:
+                reason = _('Author')
+                record._message_add_suggested_recipient(
+                    recipients, partner=record.author_id, reason=reason)
+            elif record.email_from:
+                record._message_add_suggested_recipient(
+                    recipients, email=record.email_from,
+                    reason=_('Author Email'))
+            if (record.partner_id and
+                    self.env.user.company_id.request_mail_suggest_partner):
+                reason = _('Partner')
+                record._message_add_suggested_recipient(
+                    recipients, partner=record.partner_id, reason=reason)
+
+    def _message_get_suggested_recipients(self):
+        recipients = super(
+            RequestRequest, self
+        )._message_get_suggested_recipients()
+        try:
+            self.request_add_suggested_recipients(recipients)
+        except exceptions.AcccessError:  # pylint: disable=except-pass
+            pass
+        return recipients
 
     def _message_post_after_hook(self, message, msg_vals, *args, **kwargs):
         # Overridden to add update request text with data from original message
@@ -982,7 +1115,92 @@ class RequestRequest(models.Model):
 
     def action_show_request_events(self):
         self.ensure_one()
-        action = self.env.ref(
-            'generic_request.action_request_event_view').read()[0]
-        action['domain'] = [('request_id', '=', self.id)]
-        return action
+        return self.env['generic.mixin.get.action'].get_action_by_xmlid(
+            'generic_request.action_request_event_view',
+            domain=[('request_id', '=', self.id)])
+
+    # Timesheets
+    @api.depends('timesheet_line_ids', 'timesheet_line_ids.amount',
+                 'timesheet_planned_amount')
+    def _compute_timesheet_line_data(self):
+        for rec in self:
+            timesheet_amount = 0.0
+            for line in rec.timesheet_line_ids:
+                timesheet_amount += line.amount
+            rec.timesheet_amount = timesheet_amount
+
+            if rec.timesheet_planned_amount:
+                rec.timesheet_remaining_amount = (
+                    rec.timesheet_planned_amount - timesheet_amount)
+                rec.timesheet_progress = (
+                    100.0 * (timesheet_amount / rec.timesheet_planned_amount))
+            else:
+                rec.timesheet_remaining_amount = 0.0
+                rec.timesheet_progress = 0.0
+
+    @api.depends('timesheet_line_ids', 'timesheet_line_ids.date_start',
+                 'timesheet_line_ids.date_start')
+    def _compute_timesheet_start_status(self):
+        TimesheetLines = self.env['request.timesheet.line']
+        domain = expression.AND([
+            TimesheetLines._get_running_lines_domain(),
+            [('request_id', 'in', self.ids)],
+        ])
+        grouped = self.env["request.timesheet.line"].read_group(
+            domain=domain,
+            fields=["id", 'request_id'],
+            groupby=['request_id'],
+        )
+        lines_per_record = {
+            group['request_id'][0]: group["request_id_count"]
+            for group in grouped
+        }
+
+        for record in self:
+            if lines_per_record.get(record.id, 0) > 0:
+                record.timesheet_start_status = 'started'
+            else:
+                record.timesheet_start_status = 'not-started'
+
+    def _request_timesheet_get_defaults(self):
+        return {
+            'request_id': self.id,
+        }
+
+    def action_start_work(self):
+        self.ensure_one()
+        TimesheetLines = self.env['request.timesheet.line']
+        running_lines = TimesheetLines._find_running_lines()
+        if running_lines:
+            return self.env['generic.mixin.get.action'].get_action_by_xmlid(
+                'generic_request.action_request_wizard_stop_work',
+                context={
+                    'default_timesheet_line_id': running_lines[0].id,
+                    'request_timesheet_start_request_id': self.id,
+                })
+
+        data = self._request_timesheet_get_defaults()
+        data.update({
+            'date_start': fields.Datetime.now(),
+        })
+        timesheet_line = TimesheetLines.create(data)
+        self.trigger_event('timetracking-start-work', {
+            'timesheet_line_id': timesheet_line.id,
+        })
+
+    def action_stop_work(self):
+        self.ensure_one()
+        TimesheetLines = self.env['request.timesheet.line']
+        running_lines = TimesheetLines._find_running_lines()
+        if running_lines:
+            return self.env['generic.mixin.get.action'].get_action_by_xmlid(
+                'generic_request.action_request_wizard_stop_work',
+                context={'default_timesheet_line_id': running_lines[0].id})
+
+    def action_request_view_timesheet_lines(self):
+        self.ensure_one()
+        return self.env['generic.mixin.get.action'].get_action_by_xmlid(
+            'generic_request.action_timesheet_line',
+            context={'default_request_id': self.id},
+            domain=[('request_id', '=', self.id)],
+        )

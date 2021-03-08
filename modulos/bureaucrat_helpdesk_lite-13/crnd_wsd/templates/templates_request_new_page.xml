@@ -289,8 +289,8 @@
                             <h4 class="alert-heading">Following errors happened during request creation!</h4>
                             <hr/>
                             <ul>
-                                <t t-foreach="validation_errors" t-as="error">
-                                    <li t-esc="error"/>
+                                <t t-foreach="validation_errors.keys()" t-as="error_field">
+                                    <li t-esc="validation_errors[error_field]['error_text']"/>
                                 </t>
                             </ul>
                         </div>
@@ -306,26 +306,38 @@
                             <section id="request-body" class="col-sm-12">
                                 <t t-if="request.website.is_public_user()">
                                     <textarea required="required" name="req_text" id="request_text"
-                                              class="form-control" disabled="disabled">
-
+                                              class="form-control" disabled="disabled"
+                                              t-att-data-max_text_size="request.env.user.company_id.request_limit_max_text_size">
                                         <t t-esc="req_type.default_request_text"/>
                                     </textarea>
                                 </t>
                                 <t t-else="">
-                                    <textarea required="required" name="req_text" id="request_text"
-                                              class="form-control">
-
-                                        <t t-esc="req_type.default_request_text"/>
+                                    <textarea name="req_text" id="request_text"
+                                              required="required"
+                                              class="form-control"
+                                              t-att-data-max_text_size="request.env.user.company_id.request_limit_max_text_size">
+                                        <t t-if="validation_errors">
+                                            <t t-esc="req_text"/>
+                                        </t>
+                                        <t t-else="">
+                                            <t t-esc="req_type.default_request_text"/>
+                                        </t>
                                     </textarea>
+                                    <t t-if="request.env.user.company_id.request_limit_max_text_size > 0">
+                                        <span class="pull-right label" id="characters_left_label"
+                                              data-toggle="tooltip"
+                                              data-placement="bottom"
+                                              title="Remaining characters."></span>
+                                    </t>
                                 </t>
                             </section>
                         </div>
 
 
 
-                    <div class="row">
+                    <div class="row mt16">
                         <div class="oe_structure col-sm-12"/>
-                        <div class="col-sm-12 mt24 mb16 text-center">
+                        <div id="request-form-footer-controls" class="col-sm-12 mt16 mb16 text-center">
                             <a class="btn btn-default request-new-btn-back" onclick="window.history.back();">Back</a>
                             <t t-if="request.website.is_public_user()">
                                 <button disabled="disabled" class="btn btn-primary request-new-btn-next" type="submit">

@@ -1,3 +1,4 @@
+from urllib.parse import urlsplit, urlunsplit
 import logging
 import functools
 import werkzeug
@@ -33,7 +34,7 @@ def can_read_request(record):
     :return: True or False
     """
     try:
-        record = record.sudo(http.request.env.user)
+        record = record.with_user(http.request.env.user)
         record.check_access_rights('read')
         record.check_access_rule('read')
     except AccessError:
@@ -63,10 +64,9 @@ def get_redirect():
     Note, that 'redirect' param has quoted value that allows to keep
     query parametrs.
     """
-
     full_url = request.httprequest.url
-    host = request.httprequest.environ['HTTP_HOST']
-    url = full_url.split(host)[1]
+    s = urlsplit(full_url)
+    url = urlunsplit(['', '', s.path, s.query, s.fragment])
     return werkzeug.urls.url_encode({'redirect': url})
 
 
@@ -102,7 +102,11 @@ def guard_access(func):
 
 class WebsiteRequest(WSDControllerMixin, http.Controller):
     def _requests_get_request_domain_base(self, search, kind_id=None, **post):
-        domain = []
+        domain = [
+            '|',
+            ('website_id', '=', False),
+            ('website_id', '=', request.website.id),
+        ]
         if search:
             domain += [
                 '|', '|', '|', ('name', 'ilike', search),
@@ -240,7 +244,10 @@ class WebsiteRequest(WSDControllerMixin, http.Controller):
     def request(self, req_id, **kw):
         values = {}
         reqs = request.env['request.request'].search(
-            [('id', '=', req_id)])
+            [
+                '&', ('id', '=', req_id),
+                '|', ('website_id', '=', False),
+                ('website_id', '=', request.website.id)])
 
         if not reqs:
             raise request.not_found()
@@ -278,15 +285,19 @@ class WebsiteRequest(WSDControllerMixin, http.Controller):
     def _request_new_get_public_categs_domain(self, category_id=None, **post):
         if request.env.user.has_group(GROUP_USER_ADVANCED):
             return []
-        return [('website_published', '=', True)]
+        return [
+            '&', ('website_published', '=', True),
+            '|', ('website_ids', '=', False),
+            ('website_ids', 'in', request.website.id)]
 
     def _request_new_get_public_categs(self, category_id=None, **post):
-        categs = request.env['request.category'].search(
-            self._request_new_get_public_categs_domain(
-                category_id=category_id, **post))
-        return categs.filtered(
+        domain = self._request_new_get_public_categs_domain(
+            category_id=category_id, **post)
+        categs = request.env['request.category'].search(domain)
+        result = categs.filtered(
             lambda r: self._request_new_get_public_types(
                 category_id=r.id, **post))
+        return result
 
     @http.route(["/requests/new/step/category"], type='http', auth="public",
                 methods=['GET', 'POST'], website=True)
@@ -329,6 +340,10 @@ class WebsiteRequest(WSDControllerMixin, http.Controller):
             domain += [('category_ids.id', '=', category_id)]
         else:
             domain += [('category_ids', '=', False)]
+
+        domain += [
+            '|', ('website_ids', '=', False),
+            ('website_ids', 'in', request.website.id)]
 
         return request.env['request.type'].search(domain)
 
@@ -375,18 +390,32 @@ class WebsiteRequest(WSDControllerMixin, http.Controller):
 
     def _request_new_validate_data(self, req_type, req_category,
                                    req_text, data, **post):
-        errors = []
+        errors = {}
         if not req_text or req_text == '<p><br></p>':
-            errors.append(_(
-                "Request text is empty!"))
+            errors.update({
+                'request_text': {
+                    'error_text': _(
+                        "Request text is empty!")}})
+
+        max_text_size = request.env.user.company_id.request_limit_max_text_size
+        if max_text_size and len(req_text) > max_text_size:
+            errors.update({
+                'request_text': {
+                    'error_text': _(
+                        "Request text is too long!")}})
+
         return errors
 
     def _request_new_prepare_data(self, req_type, req_category,
                                   req_text, **post):
+        channel_website = request.env.ref(
+            'generic_request.request_channel_website')
         return {
             'category_id': req_category and req_category.id,
             'type_id': req_type.id,
             'request_text': req_text,
+            'channel_id': channel_website.id,
+            'website_id': request.website.id,
         }
 
     @http.route(["/requests/new/step/data"],
@@ -409,6 +438,7 @@ class WebsiteRequest(WSDControllerMixin, http.Controller):
         values.update({
             'get_redirect': get_redirect,
         })
+        values['validation_errors'] = {}
 
         if request.httprequest.method == 'POST':
             req_data = self._request_new_prepare_data(
@@ -420,21 +450,23 @@ class WebsiteRequest(WSDControllerMixin, http.Controller):
             if not validation_errors:
                 try:
                     req = request.env['request.request'].create(req_data)
+                    req._request_bind_attachments()
                 except (UserError, AccessError, ValidationError) as exc:
-                    validation_errors.append(ustr(exc))
+                    validation_errors.update({'error': {
+                        'error_text': ustr(exc)}})
                 except Exception:
                     _logger.error(
                         "Error caught during request creation", exc_info=True)
-                    validation_errors.append(
-                        _("Unknown server error. See server logs."))
+                    validation_errors.update({'error': {
+                        'error_text':
+                            _("Unknown server error. See server logs.")}})
                 else:
                     return request.render(
                         "crnd_wsd.wsd_requests_new_congratulation",
                         {'req': req.sudo()})
 
             values['validation_errors'] = validation_errors
-            # TODO: update values with posted values to save data entered by
-            # user
+            values.update(req_data)
         return request.render(
             "crnd_wsd.wsd_requests_new_request_data", values)
 

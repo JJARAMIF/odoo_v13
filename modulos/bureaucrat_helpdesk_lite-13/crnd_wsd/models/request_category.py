@@ -9,6 +9,7 @@ class RequestCategory(models.Model):
     # of inheriting from "website.published.mixin"
     website_published = fields.Boolean(
         'Visible in Website', copy=False)
+    website_ids = fields.Many2many('website')
 
     def website_publish_button(self):
         for rec in self:

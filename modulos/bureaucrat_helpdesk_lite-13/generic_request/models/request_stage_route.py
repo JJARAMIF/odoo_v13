@@ -6,6 +6,7 @@ from odoo.exceptions import (ValidationError,
 class RequestStageRoute(models.Model):
     _name = "request.stage.route"
     _inherit = [
+        'generic.mixin.track.changes',
         'mail.thread',
     ]
     _description = "Request Stage Route"
@@ -132,7 +133,7 @@ class RequestStageRoute(models.Model):
         self.ensure_one()
 
     def hook_after_stage_change(self, request):
-        """ Could be redefined, by other modules, to add mode logic
+        """ Could be redefined, by other modules, to add more logic
             on stage move of request
         """
         self.ensure_one()

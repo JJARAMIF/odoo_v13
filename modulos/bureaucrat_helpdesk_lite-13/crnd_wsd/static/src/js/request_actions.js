@@ -28,7 +28,9 @@ odoo.define('crnd_wsd.request_actions', function (require) {
                         click: this.save,
                     },
                     {
-                        text: _t("Discard"), close: true,
+                        text: opts.discard_text || _t("Discard"),
+                        close: true,
+
                     },
                 ],
                 technical: false,
@@ -255,6 +257,8 @@ odoo.define('crnd_wsd.request_actions', function (require) {
                     '<textarea id="dialog-response-text"/>');
                 var response_dialog = new WDialog(self, {
                     title: _t("Please, fill response text!"),
+                    save_text: _t("Save"),
+                    discard_text: _t("Discard"),
                     $content: $response_content,
                 });
                 response_dialog.on('save', self, function () {

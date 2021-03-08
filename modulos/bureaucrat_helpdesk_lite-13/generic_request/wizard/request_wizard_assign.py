@@ -8,7 +8,8 @@ class RequestWizardAssign(models.TransientModel):
     def _default_user_id(self):
         return self.env.user
 
-    request_id = fields.Many2one('request.request', 'Request', requeired=True)
+    request_ids = fields.Many2many(
+        'request.request', string='Requests', required=True)
     user_id = fields.Many2one(
         'res.users', string="User", default=_default_user_id, required=True)
     partner_id = fields.Many2one(
@@ -18,7 +19,11 @@ class RequestWizardAssign(models.TransientModel):
 
     def do_assign(self):
         for rec in self:
-            rec.request_id.ensure_can_assign()
-            rec.request_id.user_id = rec.user_id
+            rec.request_ids.ensure_can_assign()
+            rec.request_ids.with_context(
+                assign_comment=rec.comment).write({
+                    'user_id': rec.user_id.id,
+                })
             if rec.comment:
-                rec.request_id.message_post(body=rec.comment)
+                for request in rec.request_ids:
+                    request.message_post(body=rec.comment)

@@ -19,3 +19,10 @@ class WSDControllerMixin(http.Controller):
                 raise
             return record
         return http.request.env[model].browse()
+
+    def _is_view_active(self, xmlid):
+        """ Check if view is active or not
+            :param str xmlid: external ID of view
+            :return bool: True if view is active, otherwise False
+        """
+        return http.request.env.ref(xmlid).active

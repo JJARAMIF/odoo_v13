@@ -12,6 +12,10 @@
         <field name="bg_color">rgba(10, 78, 196, 1)</field>
         <field name="label_color">rgba(255, 255, 255, 1)</field>
     </record>
+    <record id="request_stage_type_progress" model="request.stage.type">
+        <field name="name">Progress</field>
+        <field name="code">progress</field>
+    </record>
     <record id="request_stage_type_cancel" model="request.stage.type">
         <field name="name">Cancel</field>
         <field name="code">cancel</field>

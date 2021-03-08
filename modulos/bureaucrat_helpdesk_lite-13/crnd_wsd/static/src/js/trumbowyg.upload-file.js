@@ -61,8 +61,7 @@ odoo.define('crnd_wsd.trumbowyg.upload-file', function (require) {
                         that = this;
 
                     // eslint-disable-next-line no-undefined
-                    if (req && typeof req.upload === 'object' &&
-                        that.progressUpload !== undefined) {
+                    if (req && typeof req.upload === 'object' && that.progressUpload !== undefined) {
                         req.upload.addEventListener('progress', function (e) {
                             that.progressUpload(e);
                         }, false);
@@ -140,6 +139,12 @@ odoo.define('crnd_wsd.trumbowyg.upload-file', function (require) {
                                     data.append(
                                         trumbowyg.o.plugins.uploadFile.fileFieldName, file);
 
+                                    var request_id = trumbowyg.$box.closest('.wsd_request').data('request-id');
+                                    if (request_id) {
+                                        data.append(
+                                            'request_id', request_id);
+                                    }
+
                                     trumbowyg.o.plugins.uploadFile.data.forEach(
                                         function (cur) {
                                             data.append(cur.name, cur.value);
@@ -211,7 +216,7 @@ odoo.define('crnd_wsd.trumbowyg.upload-file', function (require) {
                                                     $img.attr('alt', values.alt);
                                                     $img.css('max-width', '100%');
                                                 } else {
-                                                    var link = $(['<a href="', url, '">', values.alt || values.url, '</a>'].join(''));
+                                                    var link = $(['<a target="_blank" href="', url, '">', values.alt || values.url, '</a> '].join(''));
                                                     trumbowyg.range.insertNode(link[0]);
                                                     trumbowyg.syncCode();
                                                     trumbowyg.$c.trigger('tbwchange');

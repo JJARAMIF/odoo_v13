@@ -6,8 +6,8 @@
     """,
     'author': "Center of Research and Development",
     'website': "https://crnd.pro",
-    'license': 'OPL-1',
-    'version': '13.0.0.1.0',
+    'license': 'LGPL-3',
+    'version': '13.0.1.3.0',
     'depends': [
         'generic_request',
     ],

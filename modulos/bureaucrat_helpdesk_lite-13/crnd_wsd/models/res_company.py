@@ -10,3 +10,4 @@ class ResCompany(models.Model):
             ('restrict', 'Restricted UI')
         ],
         default='redirect')
+    request_limit_max_text_size = fields.Integer(default=0)

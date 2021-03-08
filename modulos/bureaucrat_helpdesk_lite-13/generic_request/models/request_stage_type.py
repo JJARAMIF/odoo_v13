@@ -7,6 +7,7 @@ class RequestStageType(models.Model):
     _inherit = [
         'generic.mixin.name_with_code',
         'generic.mixin.uniq_name_code',
+        'generic.mixin.track.changes',
     ]
     _description = 'Request Stage Type'
 
@@ -29,14 +30,7 @@ class RequestStageType(models.Model):
 
     def action_show_requests(self):
         self.ensure_one()
-        action = self.env.ref(
-            'generic_request.action_request_window').read()[0]
-        ctx = dict(self.env.context)
-        ctx.update({
-            'default_stage_type_id': self.id,
-        })
-        return dict(
-            action,
-            context=ctx,
-            domain=[('stage_type_id', '=', self.id)]
-        )
+        return self.env['generic.mixin.get.action'].get_action_by_xmlid(
+            'generic_request.action_request_window',
+            context={'default_stage_type_id': self.id},
+            domain=[('stage_type_id', '=', self.id)])

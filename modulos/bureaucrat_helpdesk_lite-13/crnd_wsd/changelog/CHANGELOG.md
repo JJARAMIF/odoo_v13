@@ -1,5 +1,46 @@
 # Changelog
 
+## Version 1.50.0
+
+Added mult-site support for requests
+
+
+## Version 1.47.0
+
+Automatically set channel to Website for requests created from website
+
+
+## Version 1.40.0
+
+- Added ability to restrict max text size of request text on website UI and
+    make this configurable through global options
+- Added visual information about the number of characters entered
+
+
+## Version 1.37.0
+
+Merge with crnd_wsd_timesheet addon
+
+
+## Version 1.32.0
+
+Use different colors for deadline icon depending on deadline value
+
+
+## Version 1.29.0
+
+Improved file uploading from website UI.
+- automatically bind uploaded files and images to created request.
+- open uploaded files in new tab in browse
+- download uploaded documents (instead of displaying them)
+
+
+
+## Version 1.28.0
+
+Show deadline on request page and in request list
+
+
 ## Version 1.26.0
 
 Changed views, to show author as creator.

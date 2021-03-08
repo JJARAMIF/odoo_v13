@@ -7,15 +7,17 @@ msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-01-09 16:22+0000\n"
-"PO-Revision-Date: 2020-01-09 18:33+0200\n"
-"Last-Translator: <>\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2020-07-28 12:23+0000\n"
+"Last-Translator: Ostap Yakovenko <ceo@crnd.pro>\n"
+"Language-Team: Russian <http://weblate.crnd.pro/projects/bureaucrat-itsm-13/"
+"crnd_wsd/ru/>\n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: \n"
-"Language: ru\n"
-"X-Generator: Poedit 2.2.4\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 3.10.3\n"
 
 #. module: crnd_wsd
 #: model:request.category,description:crnd_wsd.request_category_demo_website
@@ -68,8 +70,12 @@ msgstr "<span class=\"fa fa-hashtag mr4\" title=\"Тип\"/>"
 
 #. module: crnd_wsd
 #: model_terms:ir.ui.view,arch_db:crnd_wsd.wsd_request_simplified_line
-msgid "<span class=\"fa fa-info-circle info-toggle mr8\" title=\"Show request info\"/>"
-msgstr "<span class=\"fa fa-info-circle info-toggle mr8\" title=\"Показать информацию о запросе\"/>"
+msgid ""
+"<span class=\"fa fa-info-circle info-toggle mr8\" title=\"Show request info"
+"\"/>"
+msgstr ""
+"<span class=\"fa fa-info-circle info-toggle mr8\" title=\"Показать "
+"информацию о запросе\"/>"
 
 #. module: crnd_wsd
 #: model_terms:ir.ui.view,arch_db:crnd_wsd.request_short_info
@@ -81,13 +87,26 @@ msgstr "<span class=\"fa fa-square mr4\" title=\"Вид\"/>"
 
 #. module: crnd_wsd
 #: model_terms:ir.ui.view,arch_db:crnd_wsd.wsd_request_body
-msgid "<span class=\"wsd_request header-bg-filler\">Request</span>"
-msgstr "<span class=\"wsd_request header-bg-filler\">Запрос</span>"
+msgid ""
+"<span class=\"header-bg-filler\">Request</span>\n"
+"                                    <span class=\"header-separator-splitter"
+"\"/>"
+msgstr ""
+
+#. module: crnd_wsd
+#: model_terms:ir.ui.view,arch_db:crnd_wsd.wsd_requests_new_request_data
+msgid ""
+"<span class=\"pull-right label\" id=\"characters_left_label\" data-toggle="
+"\"tooltip\" data-placement=\"bottom\" title=\"Remaining characters.\"/>"
+msgstr ""
 
 #. module: crnd_wsd
 #: model_terms:ir.ui.view,arch_db:crnd_wsd.wsd_request_body
-msgid "<span class=\"wsd_request header-bg-filler\">Response</span>"
-msgstr "<span class=\"wsd_request header-bg-filler\">Ответ</span>"
+msgid ""
+"<span class=\"wsd_request header-bg-filler\">Response</span>\n"
+"                                    <span class=\"header-separator-splitter"
+"\"/>"
+msgstr ""
 
 #. module: crnd_wsd
 #: model_terms:ir.ui.view,arch_db:crnd_wsd.wsd_request_action_log
@@ -110,11 +129,7 @@ msgid "Accepted"
 msgstr "Принят"
 
 #. module: crnd_wsd
-#: code:addons/crnd_wsd/controllers/helpers.py:86
-#: code:addons/crnd_wsd/controllers/helpers.py:92
-#: code:addons/crnd_wsd/controllers/helpers.py:99
-#: code:addons/crnd_wsd/controllers/helpers.py:125
-#: code:addons/crnd_wsd/controllers/helpers.py:136
+#: code:addons/crnd_wsd/controllers/helpers.py:0
 #, python-format
 msgid "Access denied"
 msgstr "Доступ запрещен"
@@ -162,7 +177,8 @@ msgstr "Назад"
 #. module: crnd_wsd
 #: model_terms:request.request,instruction_html:crnd_wsd.demo_request_request_printer_1
 msgid "Below is example of list, that describes steps to solve request"
-msgstr "Ниже представлен пример списка, который описывает шаги для решения запроса"
+msgstr ""
+"Ниже представлен пример списка, который описывает шаги для решения запроса"
 
 #. module: crnd_wsd
 #: model:request.type,name:crnd_wsd.request_type_bug_report
@@ -181,7 +197,7 @@ msgstr "Стиль кнопок для вебсайта"
 
 #. module: crnd_wsd
 #. openerp-web
-#: code:addons/crnd_wsd/static/src/xml/templates.xml:11
+#: code:addons/crnd_wsd/static/src/xml/templates.xml:0
 #: model_terms:ir.ui.view,arch_db:crnd_wsd.wsd_requests_new_select_category
 #: model_terms:ir.ui.view,arch_db:crnd_wsd.wsd_requests_new_select_type
 #, python-format
@@ -297,12 +313,12 @@ msgid "Current stage"
 msgstr "Текущий этап"
 
 #. module: crnd_wsd
-#: selection:request.stage.route,website_button_style:0
+#: model:ir.model.fields.selection,name:crnd_wsd.selection__request_stage_route__website_button_style__danger
 msgid "Danger"
 msgstr "Опасность"
 
 #. module: crnd_wsd
-#: selection:request.stage.route,website_button_style:0
+#: model:ir.model.fields.selection,name:crnd_wsd.selection__request_stage_route__website_button_style__dark
 msgid "Dark"
 msgstr "Темный"
 
@@ -312,7 +328,22 @@ msgid "Date assigned"
 msgstr "Дата назначения"
 
 #. module: crnd_wsd
-#: selection:request.stage.route,website_button_style:0
+#: model_terms:ir.ui.view,arch_db:crnd_wsd.wsd_request_body
+msgid "Deadline date"
+msgstr ""
+
+#. module: crnd_wsd
+#: model_terms:ir.ui.view,arch_db:crnd_wsd.wsd_request_simplified_line
+msgid "Deadline: {{rel_req.deadline_date}}"
+msgstr ""
+
+#. module: crnd_wsd
+#: model_terms:ir.ui.view,arch_db:crnd_wsd.wsd_request_table
+msgid "Deadline: {{req.deadline_date}}"
+msgstr ""
+
+#. module: crnd_wsd
+#: model:ir.model.fields.selection,name:crnd_wsd.selection__request_stage_route__website_button_style__default
 msgid "Default"
 msgstr "По умолчанию"
 
@@ -339,14 +370,14 @@ msgstr "Отключить комментарии для закрытых зап
 
 #. module: crnd_wsd
 #. openerp-web
-#: code:addons/crnd_wsd/static/src/js/request_actions.js:31
+#: code:addons/crnd_wsd/static/src/js/request_actions.js:0
 #, python-format
 msgid "Discard"
 msgstr "Отменить"
 
 #. module: crnd_wsd
 #. openerp-web
-#: code:addons/crnd_wsd/static/src/js/blockui.js:13
+#: code:addons/crnd_wsd/static/src/js/blockui.js:0
 #, python-format
 msgid "Don't leave yet,<br />it's still loading..."
 msgstr "Не уходите,<br />программа еще загружаеться..."
@@ -365,10 +396,7 @@ msgstr "Править"
 
 #. module: crnd_wsd
 #. openerp-web
-#: code:addons/crnd_wsd/static/src/js/request_actions.js:199
-#: code:addons/crnd_wsd/static/src/js/request_actions.js:212
-#: code:addons/crnd_wsd/static/src/js/request_actions.js:231
-#: code:addons/crnd_wsd/static/src/js/request_actions.js:242
+#: code:addons/crnd_wsd/static/src/js/request_actions.js:0
 #, python-format
 msgid "Error"
 msgstr "Ошибка"
@@ -409,13 +437,12 @@ msgid "Here is just example of instruction."
 msgstr "Это просто пример инструкции."
 
 #. module: crnd_wsd
-#: code:addons/crnd_wsd/controllers/helpers.py:23
-#, python-format
-msgid "Image size excessive, uploaded images must be smaller than 42 million pixel"
-msgstr "Размер изображения слишком большой, загружуемые изображения должны быть меньше чем 42 млн. пикселей"
+#: model_terms:ir.ui.view,arch_db:crnd_wsd.wsd_requests_timesheet_info
+msgid "Hours"
+msgstr ""
 
 #. module: crnd_wsd
-#: selection:request.stage.route,website_button_style:0
+#: model:ir.model.fields.selection,name:crnd_wsd.selection__request_stage_route__website_button_style__info
 msgid "Info"
 msgstr "Информация"
 
@@ -428,25 +455,25 @@ msgid "Kind"
 msgstr "Вид"
 
 #. module: crnd_wsd
-#: selection:request.stage.route,website_button_style:0
+#: model:ir.model.fields.selection,name:crnd_wsd.selection__request_stage_route__website_button_style__light
 msgid "Light"
 msgstr "Светлый"
 
 #. module: crnd_wsd
-#: selection:request.stage.route,website_button_style:0
+#: model:ir.model.fields.selection,name:crnd_wsd.selection__request_stage_route__website_button_style__link
 msgid "Link"
 msgstr "Ссылка"
 
 #. module: crnd_wsd
 #. openerp-web
-#: code:addons/crnd_wsd/static/src/js/blockui.js:10
+#: code:addons/crnd_wsd/static/src/js/blockui.js:0
 #, python-format
 msgid "Loading..."
 msgstr "Загрузка..."
 
 #. module: crnd_wsd
 #. openerp-web
-#: code:addons/crnd_wsd/static/src/js/blockui.js:20
+#: code:addons/crnd_wsd/static/src/js/blockui.js:0
 #, python-format
 msgid "Maybe you should consider reloading the application by pressing F5..."
 msgstr "Возможно следует перезагрузить программу, для этого нажмите F5..."
@@ -454,7 +481,7 @@ msgstr "Возможно следует перезагрузить програ�
 #. module: crnd_wsd
 #: model_terms:ir.ui.view,arch_db:crnd_wsd.wsd_requests_filterbox
 msgid "My"
-msgstr "Мои"
+msgstr "мой"
 
 #. module: crnd_wsd
 #: model_terms:ir.ui.view,arch_db:crnd_wsd.wsd_request_navigation
@@ -478,6 +505,11 @@ msgid "Open"
 msgstr "Открыты"
 
 #. module: crnd_wsd
+#: model_terms:ir.ui.view,arch_db:crnd_wsd.wsd_requests_timesheet_info
+msgid "Planned time"
+msgstr ""
+
+#. module: crnd_wsd
 #: model_terms:ir.ui.view,arch_db:crnd_wsd.wsd_requests
 #: model_terms:ir.ui.view,arch_db:crnd_wsd.wsd_requests_new_request_data
 #: model_terms:ir.ui.view,arch_db:crnd_wsd.wsd_requests_new_select_category
@@ -487,13 +519,13 @@ msgstr "Пожалуйста,"
 
 #. module: crnd_wsd
 #. openerp-web
-#: code:addons/crnd_wsd/static/src/js/request_actions.js:257
+#: code:addons/crnd_wsd/static/src/js/request_actions.js:0
 #, python-format
 msgid "Please, fill response text!"
 msgstr "Пожалуйста, заполните текст ответа!"
 
 #. module: crnd_wsd
-#: selection:request.stage.route,website_button_style:0
+#: model:ir.model.fields.selection,name:crnd_wsd.selection__request_stage_route__website_button_style__primary
 msgid "Primary"
 msgstr "Основной"
 
@@ -508,12 +540,12 @@ msgid "Read more"
 msgstr "Больше"
 
 #. module: crnd_wsd
-#: selection:request.stage.route,website_extra_action:0
+#: model:ir.model.fields.selection,name:crnd_wsd.selection__request_stage_route__website_extra_action__redirect_to_my
 msgid "Redirect to My Requests"
 msgstr "Перенаправить на \"Мои запросы\""
 
 #. module: crnd_wsd
-#: selection:res.company,request_wsd_public_ui_visibility:0
+#: model:ir.model.fields.selection,name:crnd_wsd.selection__res_company__request_wsd_public_ui_visibility__redirect
 msgid "Redirect to login"
 msgstr "Перенаправить на страницу входа"
 
@@ -555,6 +587,12 @@ msgstr ""
 #: model:ir.model,name:crnd_wsd.model_request_category
 msgid "Request Category"
 msgstr "Категория запроса"
+
+#. module: crnd_wsd
+#: model:ir.model.fields,field_description:crnd_wsd.field_res_company__request_limit_max_text_size
+#: model:ir.model.fields,field_description:crnd_wsd.field_res_config_settings__request_limit_max_text_size
+msgid "Request Limit Max Text Size"
+msgstr ""
 
 #. module: crnd_wsd
 #: model:ir.model,name:crnd_wsd.model_request_stage_route
@@ -600,10 +638,16 @@ msgid "Request kind"
 msgstr "Вид запроса"
 
 #. module: crnd_wsd
-#: code:addons/crnd_wsd/controllers/main.py:380
+#: code:addons/crnd_wsd/controllers/main.py:0
 #, python-format
 msgid "Request text is empty!"
 msgstr "Текст запроса не заполнен!"
+
+#. module: crnd_wsd
+#: code:addons/crnd_wsd/controllers/main.py:0
+#, python-format
+msgid "Request text is too long!"
+msgstr ""
 
 #. module: crnd_wsd
 #: model_terms:ir.ui.view,arch_db:crnd_wsd.wsd_request_navigation
@@ -612,7 +656,7 @@ msgid "Requests"
 msgstr "Запросы"
 
 #. module: crnd_wsd
-#: selection:res.company,request_wsd_public_ui_visibility:0
+#: model:ir.model.fields.selection,name:crnd_wsd.selection__res_company__request_wsd_public_ui_visibility__restrict
 msgid "Restricted UI"
 msgstr "Ограниченный интерфейс"
 
@@ -623,8 +667,8 @@ msgstr ""
 
 #. module: crnd_wsd
 #. openerp-web
-#: code:addons/crnd_wsd/static/src/js/request_actions.js:26
-#: code:addons/crnd_wsd/static/src/xml/templates.xml:10
+#: code:addons/crnd_wsd/static/src/js/request_actions.js:0
+#: code:addons/crnd_wsd/static/src/xml/templates.xml:0
 #, python-format
 msgid "Save"
 msgstr "Сохранить"
@@ -635,7 +679,7 @@ msgid "Search by name, type, category or request message"
 msgstr "Ищите по имени, типу, категории или тексту запроса"
 
 #. module: crnd_wsd
-#: selection:request.stage.route,website_button_style:0
+#: model:ir.model.fields.selection,name:crnd_wsd.selection__request_stage_route__website_button_style__secondary
 msgid "Secondary"
 msgstr "Вспомогательный"
 
@@ -704,14 +748,6 @@ msgid "Sign Up"
 msgstr "Зарегистрируйтесь"
 
 #. module: crnd_wsd
-#: model:ir.model.fields,help:crnd_wsd.field_request_request__assignee_avatar
-#: model:ir.model.fields,help:crnd_wsd.field_request_request__author_avatar
-#: model:ir.model.fields,help:crnd_wsd.field_request_request__closed_by_avatar
-#: model:ir.model.fields,help:crnd_wsd.field_request_request__created_by_avatar
-msgid "Small-sized image of this contact. It is automatically resized as a 64x64px image, with aspect ratio preserved. Use this field anywhere a small image is required."
-msgstr "Маленькое изображение контакта. Автоматически преобразуется в изображение 64x64px, с сохранением пропорций. Используйте это поле там, где требуется маленькое изображение."
-
-#. module: crnd_wsd
 #: model_terms:request.request,help_html:crnd_wsd.demo_request_request_upgrade_request_1
 #: model_terms:request.type,help_html:crnd_wsd.request_type_upgrade
 msgid "Specify what you want to upgrade"
@@ -739,20 +775,20 @@ msgstr "Шаг N"
 
 #. module: crnd_wsd
 #. openerp-web
-#: code:addons/crnd_wsd/static/src/js/blockui.js:11
+#: code:addons/crnd_wsd/static/src/js/blockui.js:0
 #, python-format
 msgid "Still loading..."
 msgstr "Еще загружаеться..."
 
 #. module: crnd_wsd
 #. openerp-web
-#: code:addons/crnd_wsd/static/src/js/blockui.js:12
+#: code:addons/crnd_wsd/static/src/js/blockui.js:0
 #, python-format
 msgid "Still loading...<br />Please be patient."
 msgstr "Еще загружаеться...<br />Пожалуйста подождите."
 
 #. module: crnd_wsd
-#: selection:request.stage.route,website_button_style:0
+#: model:ir.model.fields.selection,name:crnd_wsd.selection__request_stage_route__website_button_style__success
 msgid "Success"
 msgstr "Успех"
 
@@ -763,10 +799,12 @@ msgstr "Поддержка"
 
 #. module: crnd_wsd
 #. openerp-web
-#: code:addons/crnd_wsd/static/src/js/blockui.js:17
+#: code:addons/crnd_wsd/static/src/js/blockui.js:0
 #, python-format
 msgid "Take a minute to get a coffee,<br />because it's loading..."
-msgstr "У вас есть минутка чтобы випить кофе,<br />так как программа еще загружается..."
+msgstr ""
+"У вас есть минутка чтобы випить кофе,<br />так как программа еще "
+"загружается..."
 
 #. module: crnd_wsd
 #: model:request.category,name:crnd_wsd.request_category_demo_website_tech
@@ -798,15 +836,23 @@ msgstr ""
 #: model_terms:request.type,help_html:crnd_wsd.request_type_generic
 msgid ""
 "This is request type for generic questions related to our SaaS service\n"
-"            Use this request type if you cannot find exact request type for your question"
+"            Use this request type if you cannot find exact request type for "
+"your question"
 msgstr ""
-"Данный тип запросов предназначен для общих вопросов касательно нашего SaaS сервиса\n"
-"            используйте этот тип запросов если не можете найти тип, который соответствует вашему вопросу"
+"Данный тип запросов предназначен для общих вопросов касательно нашего SaaS "
+"сервиса\n"
+"            используйте этот тип запросов если не можете найти тип, который "
+"соответствует вашему вопросу"
 
 #. module: crnd_wsd
 #: model_terms:request.request,help_html:crnd_wsd.demo_request_request_printer_1
 msgid "This request type is used to request access to printer."
 msgstr "Этот тип запроса используется для запроса на доступ к принтеру."
+
+#. module: crnd_wsd
+#: model_terms:ir.ui.view,arch_db:crnd_wsd.wsd_requests_timesheet_info
+msgid "Time spent"
+msgstr ""
 
 #. module: crnd_wsd
 #: model_terms:ir.ui.view,arch_db:crnd_wsd.wsd_request_body
@@ -817,6 +863,11 @@ msgstr "К обсуждению"
 #: model_terms:ir.ui.view,arch_db:crnd_wsd.wsd_request_body
 msgid "To response"
 msgstr "К ответу"
+
+#. module: crnd_wsd
+#: model_terms:ir.ui.view,arch_db:crnd_wsd.wsd_requests_timesheet_info
+msgid "Tracked time"
+msgstr ""
 
 #. module: crnd_wsd
 #: model_terms:ir.ui.view,arch_db:crnd_wsd.request_short_info
@@ -837,7 +888,7 @@ msgstr ""
 "                <span/>"
 
 #. module: crnd_wsd
-#: code:addons/crnd_wsd/controllers/main.py:429
+#: code:addons/crnd_wsd/controllers/main.py:0
 #, python-format
 msgid "Unknown server error. See server logs."
 msgstr "Неизвестная ошибка сервера. Смотрите логи сервера."
@@ -854,8 +905,12 @@ msgstr "Обновлено"
 
 #. module: crnd_wsd
 #: model:res.groups,comment:crnd_wsd.group_service_desk_website_user_all_requests
-msgid "Users in this groups can see all requests in system, but still not have access to internal UI."
-msgstr "Пользователи в этих группах могут видеть все запросы в системе, но все еще не имеют доступа к внутреннему интерфейсу."
+msgid ""
+"Users in this groups can see all requests in system, but still not have "
+"access to internal UI."
+msgstr ""
+"Пользователи в этих группах могут видеть все запросы в системе, но все еще "
+"не имеют доступа к внутреннему интерфейсу."
 
 #. module: crnd_wsd
 #: model_terms:ir.ui.view,arch_db:crnd_wsd.view_request_request_form
@@ -878,12 +933,16 @@ msgid "WSD"
 msgstr ""
 
 #. module: crnd_wsd
-#: selection:request.stage.route,website_button_style:0
+#: model:ir.model.fields.selection,name:crnd_wsd.selection__request_stage_route__website_button_style__warning
 msgid "Warning"
 msgstr "Предупреждение"
 
 #. module: crnd_wsd
+#: model:ir.model.fields,field_description:crnd_wsd.field_request_category__website_ids
+#: model:ir.model.fields,field_description:crnd_wsd.field_request_request__website_id
+#: model:ir.model.fields,field_description:crnd_wsd.field_request_type__website_ids
 #: model_terms:ir.ui.view,arch_db:crnd_wsd.view_request_stage_route_form
+#: model_terms:ir.ui.view,arch_db:crnd_wsd.view_request_website_request_request_search
 msgid "Website"
 msgstr "Вебсайт"
 
@@ -909,8 +968,14 @@ msgstr "Website Service Desk (Публичная видимость)"
 
 #. module: crnd_wsd
 #: model:res.groups,comment:crnd_wsd.group_service_desk_website_user_advanced
-msgid "Website advanced users of service desk. Users in this group can create requests with request types and categories they are subscribed for, even if these types and categories not website published."
-msgstr "Продвинутые пользователи сервис-деска. Пользователи этой группы могут создавать запросы с типами и категориями запросов, на которые они подписаны, даже если эти типы и категории не опубликованы на вебсайте."
+msgid ""
+"Website advanced users of service desk. Users in this group can create "
+"requests with request types and categories they are subscribed for, even if "
+"these types and categories not website published."
+msgstr ""
+"Продвинутые пользователи сервис-деска. Пользователи этой группы могут "
+"создавать запросы с типами и категориями запросов, на которые они подписаны, "
+"даже если эти типы и категории не опубликованы на вебсайте."
 
 #. module: crnd_wsd
 #: model:request.category,description:crnd_wsd.request_category_demo_website_support
@@ -929,9 +994,10 @@ msgstr "Вы можете использовать здесь html для фор
 
 #. module: crnd_wsd
 #. openerp-web
-#: code:addons/crnd_wsd/static/src/js/blockui.js:14
+#: code:addons/crnd_wsd/static/src/js/blockui.js:0
 #, python-format
-msgid "You may not believe it, <br/> but the application is actually loading..."
+msgid ""
+"You may not believe it, <br/> but the application is actually loading..."
 msgstr "Вы не поверите,<br />но приложение на самом деле загружается..."
 
 #. module: crnd_wsd
@@ -941,10 +1007,15 @@ msgstr "Ваш запрос будет рассмотрен в ближайше�
 
 #. module: crnd_wsd
 #. openerp-web
-#: code:addons/crnd_wsd/static/src/js/widgets.js:80
+#: code:addons/crnd_wsd/static/src/js/widgets.js:0
 #, python-format
 msgid "less"
 msgstr "меньше"
+
+#. module: crnd_wsd
+#: model_terms:ir.ui.view,arch_db:crnd_wsd.wsd_requests_timesheet_info
+msgid "of"
+msgstr ""
 
 #. module: crnd_wsd
 #: model_terms:ir.ui.view,arch_db:crnd_wsd.wsd_requests
@@ -961,3 +1032,25 @@ msgstr "или"
 #: model_terms:ir.ui.view,arch_db:crnd_wsd.wsd_requests_new_select_type
 msgid "to be able to view and create requests."
 msgstr "чтобы просматривать и создавать запросы."
+
+#~ msgid "<span class=\"wsd_request header-bg-filler\">Request</span>"
+#~ msgstr "<span class=\"wsd_request header-bg-filler\">Запрос</span>"
+
+#~ msgid "<span class=\"wsd_request header-bg-filler\">Response</span>"
+#~ msgstr "<span class=\"wsd_request header-bg-filler\">Ответ</span>"
+
+#~ msgid ""
+#~ "Image size excessive, uploaded images must be smaller than 42 million "
+#~ "pixel"
+#~ msgstr ""
+#~ "Размер изображения слишком большой, загружуемые изображения должны быть "
+#~ "меньше чем 42 млн. пикселей"
+
+#~ msgid ""
+#~ "Small-sized image of this contact. It is automatically resized as a "
+#~ "64x64px image, with aspect ratio preserved. Use this field anywhere a "
+#~ "small image is required."
+#~ msgstr ""
+#~ "Маленькое изображение контакта. Автоматически преобразуется в изображение "
+#~ "64x64px, с сохранением пропорций. Используйте это поле там, где требуется "
+#~ "маленькое изображение."

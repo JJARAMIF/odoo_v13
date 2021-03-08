@@ -11,6 +11,9 @@
                     <field name="website_published" widget="website_button"/>
                 </button>
             </div>
+            <xpath expr="//notebook/page[@name='page_description']/group/group[@name='group_description_right']" position="inside">
+                <field name="website_ids" widget="many2many_tags"/>
+            </xpath>
         </field>
     </record>
     <record model="ir.ui.view" id="view_request_type_search">

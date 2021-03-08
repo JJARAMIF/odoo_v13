@@ -21,7 +21,7 @@
         <field name="comment">Users in this groups can see all requests in system, but still not have access to internal UI.</field>
     </record>
 
-    <!-- Autmaticaly add Service Desk Website User to all employees and portal users -->
+    <!-- Automaticaly add Service Desk Website User to all employees and portal users -->
     <record id="base.group_portal" model="res.groups">
         <field name="implied_ids"
                eval="[(4, ref('group_service_desk_website_user'))]"/>
@@ -66,10 +66,12 @@
         <field name="name">Website Service Desk User: User requests</field>
         <field name="model_id" ref="generic_request.model_request_request"/>
         <field name="domain_force">[
-            '|', '|', '|', ('message_partner_ids', 'child_of', user.commercial_partner_id.id),
-                           ('partner_id', 'child_of', user.commercial_partner_id.id),
-                           ('user_id', '=', user.id),
-                           ('created_by_id', '=', user.id),
+            '|', '|', '|', '|',
+            ('message_partner_ids', 'child_of', user.commercial_partner_id.id),
+            ('author_id', 'child_of', user.commercial_partner_id.id),
+            ('partner_id', 'child_of', user.commercial_partner_id.id),
+            ('user_id', '=', user.id),
+            ('created_by_id', '=', user.id),
         ]</field>
         <field name="groups" eval="[(4, ref('group_service_desk_website_user'))]"/>
         <field eval="0" name="perm_unlink"/>

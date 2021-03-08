@@ -1,4 +1,3 @@
-from contextlib import contextmanager
 from odoo.tests import HttpCase
 
 
@@ -10,7 +9,7 @@ class TestPhantomTour(HttpCase):
         tour_service = "odoo.__DEBUG__.services['web_tour.tour']"
         js_run_tour = tour_service + ".run('%s')"
         js_tours_tour = tour_service + ".tours.%s.ready"
-        self.phantom_js(
+        self.browser_js(
             url_path=start_url,
             code=js_run_tour % tour_name,
             ready=js_tours_tour % tour_name,
@@ -22,18 +21,6 @@ class TestPhantomTour(HttpCase):
         """
         requests_before = self.env['request.request'].search([])
         self._test_phantom_tour(start_url, tour_name, **kw)
-        with self.phantom_env as env:
-            requests_new = env['request.request'].search(
-                [('id', 'not in', requests_before.ids)])
+        requests_new = self.env['request.request'].search(
+            [('id', 'not in', requests_before.ids)])
         return requests_new
-
-    @property
-    @contextmanager
-    def phantom_env(self):
-        """ Gen phantom environemnt.
-
-            self.env cannot be used when running phantom tours in V11 and less.
-            this context manager returns actual environment that could be used
-            to access environment used by phantom tours.
-        """
-        yield self.env

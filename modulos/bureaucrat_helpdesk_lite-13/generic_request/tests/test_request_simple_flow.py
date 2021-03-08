@@ -23,7 +23,7 @@ class TestRequestSimpleFlow(RequestCase):
         # selected
         AssignWizard = self.env['request.wizard.assign']
         assign_wizard = AssignWizard.with_user(manager).create({
-            'request_id': self.request_1.id,
+            'request_ids': [(6, 0, self.request_1.ids)],
         })
         self.assertEqual(assign_wizard.user_id, manager)
 
@@ -53,7 +53,7 @@ class TestRequestSimpleFlow(RequestCase):
         # selected
         AssignWizard = self.env['request.wizard.assign']
         assign_wizard = AssignWizard.with_user(manager).create({
-            'request_id': self.request_1.id,
+            'request_ids': [(6, 0, self.request_1.ids)],
             'comment': 'Test Comment',
         })
         self.assertEqual(assign_wizard.user_id, manager)

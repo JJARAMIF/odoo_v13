@@ -5,7 +5,7 @@ class RequestWizardClose(models.TransientModel):
     _name = 'request.wizard.close'
     _description = 'Request Wizard: Close'
 
-    request_id = fields.Many2one('request.request', 'Request', requeired=True)
+    request_id = fields.Many2one('request.request', 'Request', required=True)
     close_route_id = fields.Many2one(
         'request.stage.route', 'Close as', required=True)
     require_response = fields.Boolean(

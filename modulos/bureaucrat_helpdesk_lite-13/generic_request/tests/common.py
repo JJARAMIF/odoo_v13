@@ -85,6 +85,13 @@ class RequestCase(AccessRulesFixMixinST,
         cls.request_manager_2 = cls.env.ref(
             'generic_request.user_demo_request_manager_2')
 
+        # Creation template
+        cls.creation_template = cls.env.ref(
+            'generic_request.demo_request_creation_template')
+
+        # Request kind
+        cls.request_kind = cls.env.ref('generic_request.request_kind_demo')
+
     def _close_request(self, request, stage, response_text=False, user=None):
         if user is None:
             user = self.env.user

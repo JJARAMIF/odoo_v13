@@ -14,6 +14,14 @@
         ]]></field>
         <field name="category_ids"
                eval="[(6, 0, [ref('generic_request.request_category_demo_technical_configuration')])]"/>
+        <field name="tag_category_ids"
+               eval="[(4, ref('generic_request.tag_category_severity')), (4, ref('generic_request.tag_category_priority')), (4, ref('generic_request.tag_category_platform'))]"/>
+        <field name="use_timesheet" eval="True"/>
+        <field name="timesheet_activity_ids" eval="[
+            (4, ref('request_timesheet_activity_coding')),
+            (4, ref('request_timesheet_activity_analysis')),
+            (4, ref('request_timesheet_activity_call')),
+        ]"/>
     </record>
 
     <!-- Simple request type stages -->
@@ -100,5 +108,8 @@
         <field name="created_by_id" ref="user_demo_request"/>
         <field name="partner_id" ref="base.res_partner_2"/>
         <field name="category_id" ref="request_category_demo_technical_configuration"/>
+        <field name="date_created" eval="time.strftime('%Y-%m-06 %H:%M:%S')"/>
+        <field name="tag_ids"
+               eval="[(4, ref('generic_request.tag_priority_low')), (4, ref('generic_request.tag_platform_windows'))]"/>
     </record>
 </odoo>

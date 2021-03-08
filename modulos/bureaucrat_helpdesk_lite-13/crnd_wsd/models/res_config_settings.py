@@ -14,3 +14,5 @@ class ResConfigSettings(models.TransientModel):
          all steps of creating a request but unable to submit
          request until logged in."""
         )
+    request_limit_max_text_size = fields.Integer(
+        related='company_id.request_limit_max_text_size', readonly=False)

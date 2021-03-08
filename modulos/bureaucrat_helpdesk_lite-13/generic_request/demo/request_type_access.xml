@@ -13,6 +13,8 @@
         <field name="category_ids"
                eval="[(6, 0, [ref('generic_request.request_category_demo_technical_configuration')])]"/>
         <field name="kind_id" ref="request_kind_demo"/>
+        <field name="tag_category_ids"
+               eval="[(4, ref('generic_request.tag_category_severity')), (4, ref('generic_request.tag_category_priority'))]"/>
     </record>
 
     <!-- access request type stages -->
@@ -84,5 +86,7 @@
         <field name="created_by_id" ref="user_demo_request"/>
         <field name="category_id" ref="request_category_demo_technical_configuration"/>
         <field name="user_id" ref="base.user_demo"/>
+        <field name="date_created" eval="time.strftime('%Y-%m-05 %H:%M:%S')"/>
+        <field name="deadline_date" eval="time.strftime('%Y-%m-07')"/>
     </record>
 </odoo>

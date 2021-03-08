@@ -1,3 +1,4 @@
+/* global Promise */
 odoo.define('crnd_wsd.discussion', function (require) {
     'use strict';
 

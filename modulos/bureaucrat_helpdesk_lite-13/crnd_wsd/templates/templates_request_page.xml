@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
     <template id="wsd_request_body" name="Request body">
         <div class="row mb24">
             <div class="col-md-12">
@@ -21,6 +20,7 @@
                                        title="To discussion"
                                        class="fa fa-comments"/>
                                 </span>
+
                             </span>
                             <span class="col-md-6">
                                 <span class="badge pull-right"
@@ -37,6 +37,7 @@
                                       data-trigger="hover"
                                       class="fa fa-question pull-right mr8 text-muted"
                                       t-attf-data-content="{{ req.stage_id.description }}"/>
+
                             </span>
                         </h3>
                     </div>
@@ -92,8 +93,22 @@
                         </div>
                         <div id="request-body-container" class="row">
                             <div id="request-body-text" class="col-md-12">
-                                <h4 class="wsd_request header-separator">
-                                    <span class="wsd_request header-bg-filler">Request</span>
+                                <h4 id="request-body-text-header-separator"
+                                    class="header-separator">
+                                    <span class="header-bg-filler">Request</span>
+                                    <span class="header-separator-splitter"/>
+
+                                    <span t-if="req.deadline_date"
+                                          title="Deadline date"
+                                          class="header-bg-filler request-deadline">
+                                        <span t-if="req.deadline_state == 'ok'"
+                                              class="text-success fa fa-clock-o"/>
+                                        <span t-if="req.deadline_state == 'today'"
+                                              class="text-warning fa fa-clock-o"/>
+                                        <span t-if="req.deadline_state == 'overdue'"
+                                              class="text-danger fa fa-clock-o"/>
+                                        <span t-field="req.deadline_date" class="text-muted"/>
+                                    </span>
                                 </h4>
 
                                 <span t-if="can_change_request_text"
@@ -116,6 +131,7 @@
                             <div t-if="req.response_text" id="request-body-response" class="col-md-12">
                                 <h4 class="wsd_request header-separator" id="request-reponse-header">
                                     <span class="wsd_request header-bg-filler">Response</span>
+                                    <span class="header-separator-splitter"/>
                                 </h4>
                                 <div id="request-response-content"
                                      t-field="req.response_text"/>
@@ -211,4 +227,29 @@
         </t>
     </template>
 
+    <template id="wsd_requests_timesheet_info"
+              name="Display Timesheets"
+              inherit_id="wsd_request_body"
+              customize_show="True"
+              active="True">
+        <xpath expr="//h4[@id='request-body-text-header-separator']/span[hasclass('request-deadline')]"
+               position="before">
+            <span t-if="req.use_timesheet"
+                  class="header-bg-filler"
+                  title="Tracked time">
+                <span class="fa fa-hourglass-end mr4"/>
+                <span t-field="req.timesheet_amount"
+                      t-options="{'widget': 'float_time'}"
+                      title="Time spent"/>
+                <t t-if="req.timesheet_planned_amount">
+                    of
+                    <span t-field="req.timesheet_planned_amount"
+                          t-options="{'widget': 'float_time'}"
+                          title="Planned time"/>
+                </t>
+                Hours
+            </span>
+            <span t-if="req.use_timesheet" class="header-separator-splitter header-separator-splitter-no-grow"/>
+        </xpath>
+    </template>
 </odoo>

@@ -38,7 +38,6 @@
     </record>
 
     <record id="request_type_view_dashboard" model="ir.ui.view">
-        <field name="name">request.type.dashbard</field>
         <field name="model">request.type</field>
         <field name="arch" type="xml">
             <kanban class="oe_background_grey o_request_dashboard_kanban">
@@ -52,6 +51,20 @@
                 <field name="stage_count"/>
                 <field name="route_count"/>
 
+                <field name="request_open_today_count"/>
+                <field name="request_open_last_24h_count"/>
+                <field name="request_open_week_count"/>
+                <field name="request_open_month_count"/>
+                <field name="request_closed_today_count"/>
+                <field name="request_closed_last_24h_count"/>
+                <field name="request_closed_week_count"/>
+                <field name="request_closed_month_count"/>
+                <field name="request_deadline_today_count"/>
+                <field name="request_deadline_last_24h_count"/>
+                <field name="request_deadline_week_count"/>
+                <field name="request_deadline_month_count"/>
+                <field name="request_unassigned_count"/>
+
                 <templates>
                      <t t-name="kanban-box">
                         <div t-attf-class="oe_kanban_global_click o_request_dashboard_kanban">
@@ -64,6 +77,99 @@
                                         </div>
                                         <div t-if="record.code.raw_value" class="text-muted">
                                             <span><t t-esc="record.code.raw_value"/></span>
+                                        </div>
+                                        <div class="o_request_info_dashboard_kanban_boxes"
+                                             groups="generic_request.group_request_show_stat_on_kanban_views">
+                                            <table class="table mb4 mt4">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-center"></th>
+                                                        <th class="text-center" title="Today">T</th>
+                                                        <th class="text-center" title="Last 24 hours">24h</th>
+                                                        <th class="text-center" title="Week">W</th>
+                                                        <th class="text-center" title="Month">M</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="text-center">
+                                                    <tr>
+                                                        <td class="text-left" title="New">N</td>
+                                                        <td class="o_request_stat_table">
+                                                            <a name="action_type_request_open_today_count" type="object">
+                                                                <span class="o_value"><t t-esc="record.request_open_today_count.value"/></span>
+                                                            </a>
+                                                        </td>
+                                                        <td class="o_request_stat_table">
+                                                            <a name="action_type_request_open_last_24h_count" type="object">
+                                                                <span class="o_value"><t t-esc="record.request_open_last_24h_count.value"/></span>
+                                                            </a>
+                                                        </td>
+                                                        <td class="o_request_stat_table">
+                                                            <a name="action_type_request_open_week_count" type="object">
+                                                                <span class="o_value"><t t-esc="record.request_open_week_count.value"/></span>
+                                                            </a>
+                                                        </td>
+                                                        <td class="o_request_stat_table">
+                                                            <a name="action_type_request_open_month_count" type="object">
+                                                                <span class="o_value"><t t-esc="record.request_open_month_count.value"/></span>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-left" title="Closed">C</td>
+                                                        <td class="o_request_stat_table">
+                                                            <a name="action_type_request_closed_today_count" type="object">
+                                                                <span class="o_value"><t t-esc="record.request_closed_today_count.value"/></span>
+                                                            </a>
+                                                        </td>
+                                                        <td class="o_request_stat_table">
+                                                            <a name="action_type_request_closed_last_24h_count" type="object">
+                                                                <span class="o_value"><t t-esc="record.request_closed_last_24h_count.value"/></span>
+                                                            </a>
+                                                        </td>
+                                                        <td class="o_request_stat_table">
+                                                            <a name="action_type_request_closed_week_count" type="object">
+                                                                <span class="o_value"><t t-esc="record.request_closed_week_count.value"/></span>
+                                                            </a>
+                                                        </td>
+                                                        <td class="o_request_stat_table">
+                                                            <a name="action_type_request_closed_month_count" type="object">
+                                                                <span class="o_value"><t t-esc="record.request_closed_month_count.value"/></span>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-left" title="Deadline">D</td>
+                                                        <td class="o_request_stat_table">
+                                                            <a name="action_type_request_deadline_today_count" type="object">
+                                                                <span class="o_value"><t t-esc="record.request_deadline_today_count.value"/></span>
+                                                            </a>
+                                                        </td>
+                                                        <td class="o_request_stat_table">
+                                                            <a name="action_type_request_deadline_last_24h_count" type="object">
+                                                                <span class="o_value"><t t-esc="record.request_deadline_last_24h_count.value"/></span>
+                                                            </a>
+                                                        </td>
+                                                        <td class="o_request_stat_table">
+                                                            <a name="action_type_request_deadline_week_count" type="object">
+                                                                <span class="o_value"><t t-esc="record.request_deadline_week_count.value"/></span>
+                                                            </a>
+                                                        </td>
+                                                        <td class="o_request_stat_table">
+                                                            <a name="action_type_request_deadline_month_count" type="object">
+                                                                <span class="o_value"><t t-esc="record.request_deadline_month_count.value"/></span>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-left" title="Unassigned">U</td>
+                                                        <td class="o_request_stat_table" colspan="4">
+                                                            <a name="action_type_request_unassigned_count" type="object">
+                                                                <span class="o_value"><t t-esc="record.request_unassigned_count.value"/></span>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
                                         <div class="o_buttons">
                                             <a name="%(generic_request.action_request_type_stages)d"
@@ -106,7 +212,6 @@
     </record>
 
     <record model="ir.ui.view" id="view_request_type_search">
-        <field name="name">view.request.type.search</field>
         <field name="model">request.type</field>
         <field name="arch" type="xml">
             <search>
@@ -133,7 +238,6 @@
     </record>
 
     <record model="ir.ui.view" id="view_request_type_tree">
-        <field name="name">view.request.type.tree</field>
         <field name="model">request.type</field>
         <field name="arch" type="xml">
             <tree>
@@ -152,7 +256,6 @@
     </record>
 
     <record model="ir.ui.view" id="view_request_type_form">
-        <field name="name">view.request.type.form</field>
         <field name="model">request.type</field>
         <field name="arch" type="xml">
             <form string="Request Type">
@@ -165,6 +268,12 @@
                             <field string="Requests" name="request_count"
                                    widget="statinfo"/>
                         </button>
+                        <button name="action_request_type_diagram"
+                                type="object"
+                                string="View Flow"
+                                class="oe_stat_button"
+                                icon="fa-code-fork">
+                        </button>
                         <button name="%(action_request_type_routes)d"
                                 type="action"
                                 class="oe_stat_button" icon="fa-random">
@@ -176,12 +285,6 @@
                                 class="oe_stat_button" icon="fa-bars">
                             <field string="Stages" name="stage_count"
                                    widget="statinfo"/>
-                        </button>
-                        <button name="action_request_type_diagram"
-                                type="object"
-                                string="View Flow"
-                                class="oe_stat_button"
-                                icon="fa-code-fork">
                         </button>
                         <button name="toggle_active" type="object" groups="base.group_user"
                                 class="oe_stat_button" icon="fa-archive">
@@ -202,26 +305,50 @@
                                    options="{'color_field': 'color'}"
                                    widget="many2many_tags"/>
                         </h3>
+                        <h3 name="header_kind">
+                            <field name="kind_id" placeholder="Request kind..."/>
+                        </h3>
                     </div>
                     <notebook>
                         <page string="Description" name="page_description">
                             <group>
-                                <field name="start_stage_id"/>
-                                <field name="sequence_id" placeholder="Sequence..."/>
-                                <field name="color" widget="color"/>
-                                <field name="complex_priority"/>
-                                <field name="default_priority"
-                                    widget="priority"
-                                    attrs="{'invisible': [('complex_priority', '=', True)]}"
-                                />
-                                <field name="default_impact"
-                                    widget="priority"
-                                    attrs="{'invisible': [('complex_priority', '=', False)]}"
-                                />
-                                <field name="default_urgency"
-                                    widget="priority"
-                                    attrs="{'invisible': [('complex_priority', '=', False)]}"
-                                />
+                                <group name="group_description_left">
+                                    <label for="start_stage_id"/>
+                                    <div>
+                                        <field name="start_stage_id" attrs="{'invisible': [('start_stage_id', '=', False)]}"/>
+                                        <button name="action_create_default_stage_and_routes"
+                                                type="object"
+                                                string="Create default"
+                                                attrs="{'invisible': ['|', ('start_stage_id', '!=', False), ('id', '=', False)]}"
+                                                class="btn-primary"
+                                                style="padding-top: 0; padding-bottom: 0;"/>
+                                    </div>
+                                    <field name="sequence_id" placeholder="Sequence..."/>
+                                    <field name="color" widget="color"/>
+                                    <field name="complex_priority"
+                                           widget="boolean_toggle"/>
+                                    <field name="default_priority"
+                                           widget="priority"
+                                           attrs="{'invisible': [('complex_priority', '=', True)]}"/>
+                                    <field name="default_impact"
+                                           widget="priority"
+                                           attrs="{'invisible': [('complex_priority', '=', False)]}"/>
+                                    <field name="default_urgency"
+                                           widget="priority"
+                                           attrs="{'invisible': [('complex_priority', '=', False)]}"/>
+                                    <field name="use_timesheet"
+                                           string="Use Timesheet"
+                                           widget="boolean_toggle"/>
+                                    <field name="timesheet_activity_ids"
+                                           widget="many2many_tags"
+                                           options="{'color_field': 'color'}"
+                                           attrs="{'invisible': [('use_timesheet', '=', False)]}"
+                                           string="Timesheet Activities"/>
+                                </group>
+                                <group name="group_description_right">
+                                    <field name="tag_category_ids"
+                                           widget="many2many_tags"/>
+                                </group>
                             </group>
 
                             <separator colspan="4" string="Description"/>
@@ -254,32 +381,127 @@
                                             <th class="text-center">Show Response Text</th>
                                         </tr>
                                     </thead>
-                                        <tbody class="text-center">
-                                            <tr>
-                                                <td class="text-left">Created</td>
-                                                <td><field name="send_default_created_notification" style="width: 25%"/></td>
-                                                <td><field name="created_notification_show_request_text"/></td>
-                                                <td><field name="created_notification_show_response_text"/></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-left">Assigned</td>
-                                                <td><field name="send_default_assigned_notification" style="width: 25%"/></td>
-                                                <td><field name="assigned_notification_show_request_text"/></td>
-                                                <td><field name="assigned_notification_show_response_text"/></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-left">Closed</td>
-                                                <td><field name="send_default_closed_notification" style="width: 25%"/></td>
-                                                <td><field name="closed_notification_show_request_text"/></td>
-                                                <td><field name="closed_notification_show_response_text"/></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-left">Reopened</td>
-                                                <td><field name="send_default_reopened_notification" style="width: 25%"/></td>
-                                                <td><field name="reopened_notification_show_request_text"/></td>
-                                                <td><field name="reopened_notification_show_response_text"/></td>
-                                            </tr>
-                                        </tbody>
+                                    <tbody class="text-center">
+                                        <tr>
+                                            <td class="text-left">Created</td>
+                                            <td><field name="send_default_created_notification" style="width: 25%"/></td>
+                                            <td><field name="created_notification_show_request_text"/></td>
+                                            <td><field name="created_notification_show_response_text"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-left">Assigned</td>
+                                            <td><field name="send_default_assigned_notification" style="width: 25%"/></td>
+                                            <td><field name="assigned_notification_show_request_text"/></td>
+                                            <td><field name="assigned_notification_show_response_text"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-left">Closed</td>
+                                            <td><field name="send_default_closed_notification" style="width: 25%"/></td>
+                                            <td><field name="closed_notification_show_request_text"/></td>
+                                            <td><field name="closed_notification_show_response_text"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-left">Reopened</td>
+                                            <td><field name="send_default_reopened_notification" style="width: 25%"/></td>
+                                            <td><field name="reopened_notification_show_request_text"/></td>
+                                            <td><field name="reopened_notification_show_response_text"/></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </page>
+                        <page string="Statistics" name="page_requests_info">
+                            <div>
+                                <separator/>
+                                <table class="table table-bordered" name="table-request-info">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center"></th>
+                                            <th class="text-center">[T] Today</th>
+                                            <th class="text-center">[24 h]Last 24 Hour</th>
+                                            <th class="text-center">[W] Week</th>
+                                            <th class="text-center">[M] Month</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-center">
+                                        <tr>
+                                            <td class="text-left">[N] New</td>
+                                            <td class="o_request_stat_table">
+                                                <button name="action_type_request_open_today_count" type="object">
+                                                    <field name="request_open_today_count"/>
+                                                </button>
+                                            </td>
+                                            <td class="o_request_stat_table">
+                                                <button name="action_type_request_open_last_24h_count" type="object">
+                                                    <field name="request_open_last_24h_count"/>
+                                                </button>
+                                            </td>
+                                            <td class="o_request_stat_table">
+                                                <button name="action_type_request_open_week_count" type="object">
+                                                    <field name="request_open_week_count"/>
+                                                </button>
+                                            </td>
+                                            <td class="o_request_stat_table">
+                                                <button name="action_type_request_open_month_count" type="object">
+                                                    <field name="request_open_month_count"/>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-left">[C] Closed</td>
+                                            <td class="o_request_stat_table">
+                                                <button name="action_type_request_closed_today_count" type="object">
+                                                    <field name="request_closed_today_count"/>
+                                                </button>
+                                            </td>
+                                            <td class="o_request_stat_table">
+                                                <button name="action_type_request_closed_last_24h_count" type="object">
+                                                    <field name="request_closed_last_24h_count"/>
+                                                </button>
+                                            </td>
+                                            <td class="o_request_stat_table">
+                                                <button name="action_type_request_closed_week_count" type="object">
+                                                    <field name="request_closed_week_count"/>
+                                                </button>
+                                            </td>
+                                            <td class="o_request_stat_table">
+                                                <button name="action_type_request_closed_month_count" type="object">
+                                                    <field name="request_closed_month_count"/>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-left">[D] Deadline</td>
+                                            <td class="o_request_stat_table">
+                                                <button name="action_type_request_deadline_today_count" type="object">
+                                                    <field name="request_deadline_today_count"/>
+                                                </button>
+                                            </td>
+                                            <td class="o_request_stat_table">
+                                                <button name="action_type_request_deadline_last_24h_count" type="object">
+                                                    <field name="request_deadline_last_24h_count"/>
+                                                </button>
+                                            </td>
+                                            <td class="o_request_stat_table">
+                                                <button name="action_type_request_deadline_week_count" type="object">
+                                                    <field name="request_deadline_week_count"/>
+                                                </button>
+                                            </td>
+                                            <td class="o_request_stat_table">
+                                                <button name="action_type_request_deadline_month_count" type="object">
+                                                    <field name="request_deadline_month_count"/>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-left">[U] Unassigned</td>
+                                            <td class="o_request_stat_table" colspan="4">
+                                                <button name="action_type_request_unassigned_count" type="object">
+                                                    <field name="request_unassigned_count"/>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
                                 </table>
                             </div>
                         </page>

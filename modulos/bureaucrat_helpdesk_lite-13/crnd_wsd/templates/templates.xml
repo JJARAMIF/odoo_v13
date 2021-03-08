@@ -8,6 +8,7 @@
             <!-- Trumbowyg -->
             <script type="text/javascript" src="/crnd_wsd/static/lib/trumbowyg/dist/trumbowyg.min.js"/>
             <script type="text/javascript" src="/crnd_wsd/static/lib/trumbowyg/dist/langs/ua.min.js"/>
+            <script type="text/javascript" src="/crnd_wsd/static/lib/trumbowyg/dist/langs/ru.min.js"/>
             <script type="text/javascript" src="/crnd_wsd/static/lib/trumbowyg/dist/plugins/table/trumbowyg.table.min.js"/>
             <script type="text/javascript" src="/crnd_wsd/static/lib/trumbowyg/dist/plugins/colors/trumbowyg.colors.min.js"/>
             <link rel='stylesheet' type="text/css" href="/crnd_wsd/static/lib/trumbowyg/dist/ui/trumbowyg.min.css"/>
@@ -97,7 +98,19 @@
                                        class="fa fa-comments mr4">
                                     </a>
                                 </span>
+
                                 <div class="right_info">
+                                    <span t-if="req.deadline_date"
+                                          class="request-deadline mr4"
+                                          t-attf-title="Deadline: {{req.deadline_date}}">
+                                        <span t-if="req.deadline_state == 'ok'"
+                                              class="text-success fa fa-clock-o"/>
+                                        <span t-if="req.deadline_state == 'today'"
+                                              class="text-warning fa fa-clock-o"/>
+                                        <span t-if="req.deadline_state == 'overdue'"
+                                              class="text-danger fa fa-clock-o"/>
+                                        <span t-field="req.deadline_date" class="text-muted"/>
+                                    </span>
                                     <span class="badge"
                                           t-attf-style="background-color: {{req.stage_bg_color}}; color: {{req.stage_label_color}}">
                                          <t t-esc="req.stage_id.name"/>
@@ -326,6 +339,17 @@
                           class="text-muted user_assigned"
                           title="Assigned"/>
                     <div class="right_info">
+                        <span t-if="rel_req.deadline_date"
+                                class="request-deadline mr4"
+                                t-attf-title="Deadline: {{rel_req.deadline_date}}">
+                            <span t-if="rel_req.deadline_state == 'ok'"
+                                    class="text-success fa fa-clock-o"/>
+                            <span t-if="rel_req.deadline_state == 'today'"
+                                    class="text-warning fa fa-clock-o"/>
+                            <span t-if="rel_req.deadline_state == 'overdue'"
+                                    class="text-danger fa fa-clock-o"/>
+                            <span t-field="rel_req.deadline_date" class="text-muted"/>
+                        </span>
                         <span class="badge"
                               t-attf-style="background-color: {{rel_req.stage_bg_color}}; color: {{rel_req.stage_label_color}}">
                             <t t-esc="rel_req.stage_id.name"/>
