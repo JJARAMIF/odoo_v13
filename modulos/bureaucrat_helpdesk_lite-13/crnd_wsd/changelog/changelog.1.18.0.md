@@ -1,2 +1,0 @@
-- WYSIWYG: Updated editor to newer version
-- Added buttons to change font colors

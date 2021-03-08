@@ -1,2 +1,0 @@
-- Added ability to add comment in assign wizard for request
-- Added button *Assign to me* on request

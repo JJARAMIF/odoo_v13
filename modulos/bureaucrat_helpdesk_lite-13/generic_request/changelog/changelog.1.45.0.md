@@ -1,3 +1,0 @@
-- Intoruced new field: *Deadline*
-- Small improvements to UI
-- Fixed regression, missing *Kind* field on request form view

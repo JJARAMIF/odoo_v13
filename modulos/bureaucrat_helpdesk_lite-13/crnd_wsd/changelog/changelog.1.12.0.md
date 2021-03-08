@@ -1,2 +1,0 @@
-- Added group for portal users that can see all requests
-- Updated UA translations

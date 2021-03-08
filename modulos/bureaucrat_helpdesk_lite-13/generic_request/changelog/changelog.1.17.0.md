@@ -1,3 +1,0 @@
-- Make it possible to change request category for already created request
-- New request event *Category Changed*
-- Show *Requests* stat-button on user's form
