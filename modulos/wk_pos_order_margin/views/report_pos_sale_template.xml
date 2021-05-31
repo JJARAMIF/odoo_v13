@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : <https://store.webkul.com/license.html/> -->
+<odoo>
+
+    <template id="pos_sales_report" name="pos sales report" inherit_id="point_of_sale.report_saledetails">
+        <xpath expr="//table//thead//tr" position="inside">
+            <th>Cost Price</th>
+            <th>Margin</th>
+        </xpath>
+        <xpath expr="//table//tbody//tr" position="inside">
+                <td>
+                    <t t-esc='line.get("cost_price")'/>
+                </td>
+                <td>
+                    <t t-esc='line.get("margin")'/>
+                </td>
+        </xpath>
+    </template>
+    
+</odoo>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : <https://store.webkul.com/license.html/> -->
+<odoo>
+
+    <record model="ir.ui.view" id="pos_order_margin_form">
+        <field name="name">Pos Order Margin Form</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='amount_total']" position="after">
+                <label for="margin"/>
+                <field name="margin" nolabel="1" widget="monetary"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="pos_order_line_margin_form">
+        <field name="name">Pos Order Line Margin Form</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='lines']/form//field[@name='price_unit']" position="after">
+                <field name="purchase_price" groups="base.group_user"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="pos_order_line_margin_tree">
+        <field name="name">Pos Order Line Margin Tree</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+        <field name="arch" type="xml">
+           <xpath expr="//field[@name='lines']/tree//field[@name='price_unit']" position="after">
+                <field name="purchase_price" groups="base.group_user"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
