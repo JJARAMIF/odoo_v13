@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : <https://store.webkul.com/license.html/> -->
+<templates id="template" xml:space="preserve">
+
+    <t t-name="NumpadWidget">
+        <div class="numpad">
+            <button class="input-button number-char">1</button>
+            <button class="input-button number-char">2</button>
+            <button class="input-button number-char">3</button>
+            <button class="mode-button" data-mode='quantity'>Qty</button>
+            <br />
+            <button class="input-button number-char">4</button>
+            <button class="input-button number-char">5</button>
+            <button class="input-button number-char">6</button>
+            
+            <!-- Extra Utilities Code -->
+            <t t-if="widget.pos.config.disable_discount_button">
+                <button class="mode-button" data-mode='discount' style="pointer-events: none;opacity: 0.4;background: #c1c1c1;">Disc</button>
+            </t>
+            <t t-if="! widget.pos.config.disable_discount_button">
+                <button class="mode-button" data-mode='discount'>Disc</button>
+            </t>
+            <!-- Extra Utilities Code -->
+
+            <br />
+            <button class="input-button number-char">7</button>
+            <button class="input-button number-char">8</button>
+            <button class="input-button number-char">9</button>
+
+            <!-- Extra Utilities Code -->
+            <t t-if="widget.pos.config.disable_price_modification">
+                <button class="mode-button" data-mode='price' style="pointer-events: none;opacity: 0.4;background: #c1c1c1;">Price</button>
+            </t>
+            <t t-if="! widget.pos.config.disable_price_modification">
+                <button class="mode-button" data-mode='price'>Price</button>
+            </t>
+            <!-- Extra Utilities Code -->
+
+            <br />
+            <button class="input-button numpad-minus" >+/-</button>
+            <button class="input-button number-char">0</button>
+            <button class="input-button number-char">.</button>
+            <button class="input-button numpad-backspace">
+                <img style="pointer-events: none;" src="/point_of_sale/static/src/img/backspace.png" width="24" height="21" />
+            </button>
+        </div>
+    </t>
+
+    <t t-name="PriceUpdatePopupWidget">
+        <div class="modal-dialog">
+            <div class="popup popup-textinput">
+                <div class='title'>
+                    CHANGE PRICE
+                </div>
+                <div>
+                    <table id="target_line" width="80%" style='margin-left: 25%;margin-right:7%;margin-top: 10%;'>
+                        <tr style='text-align:left'>
+                            <th><b>Product</b></th>
+                            <th><b>PRICE</b></th>
+                        </tr>
+                        <tr style='font-size:16px;text-align:left'>
+                            <t t-if="widget.pos.get_order().selected_orderline">
+                                <td style='padding-top:5%'>
+                                    <t t-esc='widget.pos.get_order().selected_orderline.product.display_name'/>
+                                </td>
+                                <td style='padding-top:5%'><input id='price_input'></input></td>
+                            </t>
+                        </tr>
+                    </table>
+                    <div id='price_error' style='color: rgb(159, 96, 0); float: none; margin-top: 7%;font-size: smaller; height: 28px; padding-top: 2.3%; text-align: justify; background-color: rgb(254, 239, 179);display:none;'>
+                    </div>
+                </div>
+                <div class="footer">
+                    <div id='wk_ok' class="button">Ok</div>
+                    <div id='wk_cancel' class="button cancel">Cancel</div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>
