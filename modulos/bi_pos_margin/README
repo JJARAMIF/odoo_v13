@@ -1,0 +1,5 @@
+
+Version 13.0.0.1 : (03-05-21)
+		- Solved margin calculation issue.
+		- Solved warnings of 'digits'.
+		- Update code for pivot report .

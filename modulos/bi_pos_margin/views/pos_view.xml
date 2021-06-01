@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+            <record id="view_pos_pos_form_add_margin_field" model="ir.ui.view">
+            <field name="name">view.pos.pos.form.add.margin.field</field>
+            <field name="model">pos.order</field>
+            <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+            <field name="arch" type="xml">
+            	<group name="order_total" position="after">
+					<group>
+						<field name="margin"/>
+					</group>
+	            </group>
+				<xpath expr="//field[@name='lines']/tree//field[@name='price_unit']" position="after">
+						<field name="purchase_price"/>
+						<field name="margin"/>
+	            </xpath>
+	            
+	            </field>
+            </record>
+            
+    </data>
+</odoo>
+    
