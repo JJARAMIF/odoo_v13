@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="sale_coupon_program_view_form_common_pos" model="ir.ui.view">
+        <field name="name">sale.coupon.program.form.pos</field>
+        <field name="model">sale.coupon.program</field>
+        <field name="inherit_id" ref="sale_coupon.sale_coupon_program_view_form_common"/>
+        <field name="arch" type="xml">
+            <button name="action_view_sales_orders" position="attributes">
+                <attribute name="attrs">{'invisible': [('used_in', '=', 'pos')]}</attribute>
+            </button>
+            <field name="order_count" position="replace">
+                <field name="sale_order_count" string="Sales" widget="statinfo"/>
+                <field name="order_count" invisible="1"/>
+            </field>
+            <button name="action_view_sales_orders" position="after">
+                <button class="oe_stat_button" type="object" icon="fa-usd" name="action_view_pos_orders" attrs="{'invisible': [('used_in', '=', 'sale')]}">
+                    <field name="pos_order_count" string="POS Orders" widget="statinfo"/>
+                </button>
+            </button>
+            <xpath expr="//div[@name='title']" position="after">
+                <group col="2">
+                    <field name="used_in" widget="radio"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="sale_coupon_view_form_pos" model="ir.ui.view">
+        <field name="name">sale.coupon.form.pos</field>
+        <field name="model">sale.coupon</field>
+        <field name="inherit_id" ref="sale_coupon.sale_coupon_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group" position="inside">
+                <field name="pos_reference"/>
+                <field name="pos_order_id"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

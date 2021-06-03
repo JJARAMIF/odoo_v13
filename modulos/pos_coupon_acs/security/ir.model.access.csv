@@ -1,0 +1,9 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+access_program_user_pos,user pos,sale_coupon.model_sale_coupon_program,point_of_sale.group_pos_user,1,1,1,0
+access_program_manager_pos,program manager pos,sale_coupon.model_sale_coupon_program,point_of_sale.group_pos_manager,1,1,1,1
+access_applicability_user_pos,user pos,sale_coupon.model_sale_coupon_rule,point_of_sale.group_pos_user,1,1,1,0
+access_applicability_manager_pos,program manager pos,sale_coupon.model_sale_coupon_rule,point_of_sale.group_pos_manager,1,1,1,0
+access_coupon_user_pos,user pos,sale_coupon.model_sale_coupon,point_of_sale.group_pos_user,1,1,1,0
+access_coupon_manager_pos,program manager pos,sale_coupon.model_sale_coupon,point_of_sale.group_pos_manager,1,1,1,0
+access_reward_user_pos,user pos,sale_coupon.model_sale_coupon_reward,point_of_sale.group_pos_user,1,1,1,0
+access_reward_manager_pos,program manager pos,sale_coupon.model_sale_coupon_reward,point_of_sale.group_pos_manager,1,1,1,0

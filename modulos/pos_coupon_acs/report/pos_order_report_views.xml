@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_report_pos_order_pivot_coupons" model="ir.ui.view">
+        <field name="name">report.pos.order.pivot.coupons</field>
+        <field name="model">report.pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_report_pos_order_pivot"/>
+        <field name="arch" type="xml">
+            <field name="price_total" position="after">
+                <field name="amount_applied_coupons_total" string="Coupons" type="measure"/>
+                <field name="amount_applied_promo_total" string="Promotions" type="measure"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

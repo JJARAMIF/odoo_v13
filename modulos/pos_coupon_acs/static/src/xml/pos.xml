@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-name="OrderCouponButton">
+        <div class='control-button'>
+            <i class='fa fa-tag' role="img" aria-label="Set Coupon" title="Set Coupon"/> Coupon Code
+        </div>
+    </t>
+
+    <t t-name="UpdatePromotions">
+        <span class="control-button">
+            <i class="fa fa-bullhorn"></i>
+            Update Promotions
+        </span>
+    </t>
+
+    <t t-name="CouponApplyPopup">
+        <div role="dialog" class="modal-dialog">
+            <div class="popup popup-couponapply">
+                <header class="title"><t t-esc=" widget.options.title || '' " /></header>
+                <div style="padding-top: 5%;">
+                    <input type='text' t-att-value="widget.options.value || ''"></input>
+                </div>
+                <div class="footer">
+                    <div class="button confirm">
+                        Ok
+                    </div>
+                    <div class="button cancel">
+                        Cancel
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-extend="Orderline">
+        <t t-jquery="ul.info-list" t-operation="append">
+            <t t-set="reward_taxes_str" t-value="line.get_reward_taxes_str()"/>
+            <t t-if="reward_taxes_str">
+                <li class="info">
+                    <span t-esc="reward_taxes_str"/>
+                </li>
+            </t>
+        </t>
+    </t>
+
+    <t t-name="PosTicket-RewardCoupon">
+        <div class="pos-receipt">
+            <div class="pos-center-align">
+                Congratulations <t t-esc="widget.pos.get_client() and widget.pos.get_client().name"/>,Here is your reward from <t t-esc="receipt.company.name"/>.
+                <br/>
+                <t t-set="program" t-value="widget.pos.coupon_programs_by_id[coupon.program_id[0]]"/>
+                <t t-if="program.reward_type == 'discount'">
+                    <t t-if="program.discount_type == 'fixed_amount'">
+                        <span style="font-size: 50px; color: #875A7B; font-weight: bold;" t-esc="widget.format_currency(program.discount_fixed_amount)"/>
+                        <br/>
+                        <strong style="font-size: 24px;">off on your next order</strong>
+                        <br/>
+                    </t>
+                    <t t-else="">
+                        <span style="font-size: 50px; color: #875A7B; font-weight: bold;"><t t-esc="program.discount_percentage"/> %</span>
+                    </t>
+                    <t t-if="program.discount_apply_on == 'specific_product'">
+                        <br/>
+                        <strong style="font-size: 24px;">
+                            on <span t-esc="program.discount_specific_product_id[1]"/>
+                        </strong>
+                    </t>
+                    <t t-if="program.discount_apply_on == 'cheapest_product'">
+                        <br/>
+                        <strong style="font-size: 24px;">off on the cheapest product</strong>
+                    </t>
+                </t>
+                <t t-if="program.reward_type == 'product'">
+                    <span style="font-size: 36px; color: #875A7B; font-weight: bold;">
+                        get <t t-esc="program.reward_product_quantity"/> free <t t-esc="program.reward_product_id[1]"/>
+                    </span>
+                    <br/>
+                    <strong style="font-size: 24px;">on your next order</strong>
+                    <br/>
+                </t>
+            </div>
+            <div class="pos-center-align">
+                Use this promo code
+                <t t-if="coupon.expiration_date">
+                    before <t t-esc="coupon.expiration_date"/>
+                </t>
+                <img t-attf-src="/report/barcode/?type={{'Code128'}}&amp;value={{coupon.code}}&amp;width=300&amp;height=50" style="width:100%;height:35%;"/>
+                <p style="margin-top: 8px;">
+                    <strong>
+                        <span t-esc="coupon.code"/>
+                    </strong>
+                </p>
+                <t t-if="!program.rule_min_quantity in [0, 1]">
+                    <span style="font-size: 14px;">
+                        Minimum purchase of <t t-esc="program.rule_min_quantity"/> products
+                    </span>
+                    <br/>
+                </t>
+                <t t-if="program.rule_minimum_amount != 0.00">
+                    <span style="font-size: 14px;">
+                        Valid for purchase above <t t-esc="widget.format_currency(program.rule_minimum_amount)"/>
+                    </span>
+                    <br/>
+                </t>
+            </div>
+        </div>
+    </t>
+
+    <t t-extend="OrderReceipt">
+        <t t-jquery=".before-footer" t-operation="append">
+            <br/>
+            <t t-set="applied_coupons" t-value="widget.pos.get_order().get_applied_coupons()"/>
+            <div t-if="applied_coupons.length" class="receipt-applied-coupons">
+                <div class="pos-center-align">Applied coupons</div>
+                <table>
+                    <colgroup>
+                        <col width='50%'/>
+                        <col width='50%'/>
+                    </colgroup>
+                    <tr t-foreach="applied_coupons" t-as="coupon_id">
+                        <t t-set="coupon" t-value="widget.pos.coupons_by_id[coupon_id]"/>
+                        <td>
+                            <t t-esc="coupon.program_id[1]"/>
+                        </td>
+                        <td class="pos-right-align">
+                            <t t-esc="coupon.code"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <br/>
+            <t t-set="applied_code_promo_program" t-value="widget.pos.get_order().get_code_promo_program_id()"/>
+            <div t-if="applied_code_promo_program" class="receipt-applied-code-program">
+                <div class="pos-center-align">Applied Promotion Code</div>
+                <table>
+                    <colgroup>
+                        <col width='50%'/>
+                        <col width='50%'/>
+                    </colgroup>
+                    <t t-set="program" t-value="widget.pos.coupon_programs_by_id[applied_code_promo_program]"/>
+                    <td>
+                        <t t-esc="program.display_name"/>
+                    </td>
+                    <td class="pos-right-align">
+                        <t t-esc="program.promo_code"/>
+                    </td>
+                </table>
+            </div>
+
+            <br/>
+            <t t-set="applied_programs" t-value="widget.pos.get_order().get_no_code_promo_programs()"/>
+            <div t-if="applied_programs.length" class="receipt-applied-programs">
+                <div class="pos-center-align">Applied Promotions</div>
+                <table>
+                    <colgroup>
+                        <col width='50%'/>
+                        <col width='50%'/>
+                    </colgroup>
+                    <tr t-foreach="applied_programs" t-as="program_id">
+                        <t t-set="program" t-value="widget.pos.coupon_programs_by_id[program_id]"/>
+                        <td>
+                            <t t-esc="program.display_name"/>
+                        </td>
+                        <td class="pos-right-align">
+                            <t t-if="program.discount_type == 'percentage'">
+                                <t t-esc="program.discount_percentage"/> %
+                            </t>
+                            <t t-if="program.discount_type == 'fixed_amount'">
+                                <t t-esc="widget.format_currency(program.discount_fixed_amount)"/>
+                            </t>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </t>
+        <t t-jquery=".pos-receipt" t-operation="after">
+            <t t-set="generated_coupons" t-value="widget.pos.get_order().get_generated_coupons()"/>
+            <t t-if="generated_coupons.length">
+                <t t-foreach="generated_coupons" t-as="coupon_id">
+                    <t t-call="PosTicket-RewardCoupon">
+                        <t t-set="coupon" t-value="widget.pos.coupons_by_id[coupon_id]"/>
+                    </t>
+                </t>
+            </t>
+        </t>
+    </t>
+</templates>
