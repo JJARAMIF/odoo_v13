@@ -12,7 +12,7 @@ odoo.define('pos_default_code.pos_default_code', function (require) {
         generate_wrapped_product_name: function() {
         	var name = _super_orderline.generate_wrapped_product_name.call(this);
         	if (this.get_product().default_code) {
-        		name[0] = '['+this.get_product().default_code + '] ' + name[0]
+        		name[0] = name[0] + '['+this.get_product().default_code + '] ' 
         	}
         	return name
         },
