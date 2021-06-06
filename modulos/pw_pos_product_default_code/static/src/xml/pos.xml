@@ -4,7 +4,7 @@
         <t t-jquery=".product-name" t-operation="replace">
             <span class="product-name">
                 <t t-if="line.get_product().default_code">
-                    <t t-esc="'['+line.get_product().default_code +'] '+ line.get_product().display_name"/>
+                    <t t-esc="line.get_product().display_name + '['+line.get_product().default_code +'] '"/>
                 </t>
                 <t t-else="">
                     <t t-esc="line.get_product().display_name"/>
@@ -22,7 +22,7 @@
         <t t-jquery=".product-name" t-operation="replace">
             <div class="product-name" t-attf-id="article_product_#{product.id}">
                 <t t-if="product.default_code">
-                    <t t-esc="'['+product.default_code +'] '+ product.display_name"/>
+                    <t t-esc="product.display_name + '['+product.default_code +'] '"/>
                 </t>
                 <t t-else="">
                     <t t-esc="product.display_name"/>
