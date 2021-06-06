@@ -9,7 +9,8 @@
             <button class="input-button number-char">1</button>
             <button class="input-button number-char">2</button>
             <button class="input-button number-char">3</button>
-            <button class="mode-button" data-mode='quantity'>Qty</button>
+            <button class="mode-button" data-mode='quantity' style="pointer-events: none;opacity: 0.4;background: #c1c1c1;">Qty</button>
+	    <!-- <button class="mode-button" data-mode='quantity'>Qty</button> -->
             <br />
             <button class="input-button number-char">4</button>
             <button class="input-button number-char">5</button>
@@ -39,7 +40,8 @@
             <!-- Extra Utilities Code -->
 
             <br />
-            <button class="input-button numpad-minus" >+/-</button>
+            <button class="input-button numpad-minus style="pointer-events: none;opacity: 0.4;background: #c1c1c1;">+/-</button>
+            <!--  <button class="input-button numpad-minus" >+/-</button> -->
             <button class="input-button number-char">0</button>
             <button class="input-button number-char">.</button>
             <button class="input-button numpad-backspace">
