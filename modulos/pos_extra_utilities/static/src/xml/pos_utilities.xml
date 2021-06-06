@@ -40,8 +40,8 @@
             <!-- Extra Utilities Code -->
 
             <br />
-            <button class="input-button numpad-minus style="pointer-events: none;opacity: 0.4;background: #c1c1c1;">+/-</button>
-            <!--  <button class="input-button numpad-minus" >+/-</button> -->
+            <!-- <button class="input-button numpad-minus style="pointer-events: none;opacity: 0.4;background: #c1c1c1;">+/-</button> -->
+            <button class="input-button numpad-minus" >+/-</button> 
             <button class="input-button number-char">0</button>
             <button class="input-button number-char">.</button>
             <button class="input-button numpad-backspace">
