@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates id="template_product_default_code" xml:space="preserve">
+
+   <t t-extend="Product">
+       <t t-jquery="div[class=product-name]" t-operation="append">
+            <t t-if="product.default_code">
+                (<t t-esc="product.default_code"/>)
+            </t>
+       </t>
+   </t>
+
+<!--   <t t-extend="PosTicket"> odoo13-->
+<!--       <t t-jquery=".receipt-orderlines colgroup" t-operation="replace">-->
+<!--            <colgroup>-->
+<!--                <col width='45%' />-->
+<!--                <col width='20%' />-->
+<!--                <col width='35%' />-->
+<!--            </colgroup>-->
+<!--       </t>-->
+<!--       <t t-jquery=".receipt-orderlines tr td:first" t-operation="append">-->
+<!--            <t t-if="orderline.get_product().default_code">-->
+<!--                (<t t-esc="orderline.get_product().default_code"/>)-->
+<!--            </t>-->
+<!--       </t>-->
+<!--   </t>-->
+
+</templates>
