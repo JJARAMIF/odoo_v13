@@ -5,6 +5,10 @@
    <t t-extend="Product">
        <t t-jquery="div[class=product-name]" t-operation="append">
             <t t-if="product.default_code">
+                 <span  style="background-color: #e8ebe9; color: black; font-weight: bold;">
+                      <t t-esc="product.default_code"/>
+                 </span>
+
                 (<t t-esc="product.default_code"/>)
             </t>
        </t>
