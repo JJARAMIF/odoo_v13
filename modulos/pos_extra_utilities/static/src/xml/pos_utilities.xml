@@ -40,8 +40,8 @@
             <!-- Extra Utilities Code -->
 
             <br />
-            <!-- <button class="input-button numpad-minus style="pointer-events: none;opacity: 0.4;background: #c1c1c1;">+/-</button> -->
-            <button class="input-button numpad-minus" >+/-</button> 
+            <button class="input-button numpad-minus" style="pointer-events: none;opacity: 0.4;background: #c1c1c1;">+/-</button> 
+            <!-- <button class="input-button numpad-minus" >+/-</button> -->
             <button class="input-button number-char">0</button>
             <button class="input-button number-char">.</button>
             <button class="input-button numpad-backspace">
@@ -54,13 +54,13 @@
         <div class="modal-dialog">
             <div class="popup popup-textinput">
                 <div class='title'>
-                    CHANGE PRICE
+                    Cambiar Precio
                 </div>
                 <div>
-                    <table id="target_line" width="80%" style='margin-left: 25%;margin-right:7%;margin-top: 10%;'>
+                    <table id="target_line" width="80%" style='margin-left: 10%;margin-right:7%;margin-top: 10%;'>
                         <tr style='text-align:left'>
                             <th><b>Product</b></th>
-                            <th><b>PRICE</b></th>
+                            <th><b>Precio</b></th>
                         </tr>
                         <tr style='font-size:16px;text-align:left'>
                             <t t-if="widget.pos.get_order().selected_orderline">
