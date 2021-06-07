@@ -77,7 +77,7 @@
             <t t-if="! widget.pos.config.disable_price_modification">
                 <button class="input-button numpad-minus" >+/-</button>
                 <button class="input-button number-char">0</button>
-                <button class="input-button number-char">.</button> -->
+                <button class="input-button number-char">.</button>
             </t>
 
             <button class="input-button numpad-backspace">
