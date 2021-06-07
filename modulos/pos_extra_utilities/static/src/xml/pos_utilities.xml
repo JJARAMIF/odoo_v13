@@ -6,25 +6,35 @@
 
     <t t-name="NumpadWidget">
         <div class="numpad">
-            <!-- 
-            <button class="input-button number-char">1</button>
-            <button class="input-button number-char">2</button>
-            <button class="input-button number-char">3</button>
-	    <button class="mode-button" data-mode='quantity'>Qty</button> -->
-            <button class="input-button number-char" style="pointer-events: none;opacity: 0.4;background: #c1c1c1;">1</button> 
-            <button class="input-button number-char" style="pointer-events: none;opacity: 0.4;background: #c1c1c1;">2</button> 
-            <button class="input-button number-char" style="pointer-events: none;opacity: 0.4;background: #c1c1c1;">3</button> 
-            <button class="mode-button" data-mode='quantity' style="pointer-events: none;opacity: 0.4;background: #c1c1c1;">Qty</button>
+
+	    <!-- Extra Utilities Code iTC Store -->
+            <t t-if="widget.pos.config.disable_price_modification"
+                <button class="input-button number-char" style="pointer-events: none;opacity: 0.4;background: #c1c1c1;">1</button> 
+                <button class="input-button number-char" style="pointer-events: none;opacity: 0.4;background: #c1c1c1;">2</button> 
+                <button class="input-button number-char" style="pointer-events: none;opacity: 0.4;background: #c1c1c1;">3</button> 
+                <button class="mode-button" data-mode='quantity' style="pointer-events: none;opacity: 0.4;background: #c1c1c1;">Qty</button>
+            </t>
+            <t t-if="! widget.pos.config.disable_price_modification">
+                <button class="input-button number-char">1</button>
+                <button class="input-button number-char">2</button>
+                <button class="input-button number-char">3</button>
+	        <button class="mode-button" data-mode='quantity'>Qty</button>
+            </t>
 
             <br />
-            <!-- 
-            <button class="input-button number-char">4</button>
-            <button class="input-button number-char">5</button>
-            <button class="input-button number-char">6</button> -->
-            <button class="input-button number-char" style="pointer-events: none;opacity: 0.4;background: #c1c1c1;">4</button> 
-            <button class="input-button number-char" style="pointer-events: none;opacity: 0.4;background: #c1c1c1;">5</button> 
-            <button class="input-button number-char" style="pointer-events: none;opacity: 0.4;background: #c1c1c1;">6</button> 
-            
+
+	    <!-- Extra Utilities Code iTC Store -->
+            <t t-if="widget.pos.config.disable_price_modification"
+                <button class="input-button number-char" style="pointer-events: none;opacity: 0.4;background: #c1c1c1;">4</button> 
+                <button class="input-button number-char" style="pointer-events: none;opacity: 0.4;background: #c1c1c1;">5</button> 
+                <button class="input-button number-char" style="pointer-events: none;opacity: 0.4;background: #c1c1c1;">6</button> 
+            </t>
+            <t t-if="! widget.pos.config.disable_price_modification">
+                <button class="input-button number-char">4</button>
+                <button class="input-button number-char">5</button>
+                <button class="input-button number-char">6</button>
+            </t>
+             
             <!-- Extra Utilities Code -->
             <t t-if="widget.pos.config.disable_discount_button">
                 <button class="mode-button" data-mode='discount' style="pointer-events: none;opacity: 0.4;background: #c1c1c1;">Disc</button>
@@ -35,13 +45,18 @@
             <!-- Extra Utilities Code -->
 
             <br />
-            <!-- 
-            <button class="input-button number-char">7</button>
-            <button class="input-button number-char">8</button>
-            <button class="input-button number-char">9</button> -->
-            <button class="input-button number-char" style="pointer-events: none;opacity: 0.4;background: #c1c1c1;">7</button> 
-            <button class="input-button number-char" style="pointer-events: none;opacity: 0.4;background: #c1c1c1;">8</button> 
-            <button class="input-button number-char" style="pointer-events: none;opacity: 0.4;background: #c1c1c1;">9</button> 
+
+	    <!-- Extra Utilities Code iTC Store -->
+            <t t-if="widget.pos.config.disable_price_modification"
+                <button class="input-button number-char" style="pointer-events: none;opacity: 0.4;background: #c1c1c1;">7</button> 
+                <button class="input-button number-char" style="pointer-events: none;opacity: 0.4;background: #c1c1c1;">8</button> 
+                <button class="input-button number-char" style="pointer-events: none;opacity: 0.4;background: #c1c1c1;">9</button> 
+            </t>
+            <t t-if="! widget.pos.config.disable_price_modification">
+                <button class="input-button number-char">7</button>
+                <button class="input-button number-char">8</button>
+                <button class="input-button number-char">9</button>
+            </t>
 
             <!-- Extra Utilities Code -->
             <t t-if="widget.pos.config.disable_price_modification">
@@ -50,16 +65,21 @@
             <t t-if="! widget.pos.config.disable_price_modification">
                 <button class="mode-button" data-mode='price'>Price</button>
             </t>
-            <!-- Extra Utilities Code -->
 
             <br />
-            <!-- 
-            <button class="input-button numpad-minus" >+/-</button>
-            <button class="input-button number-char">0</button>
-            <button class="input-button number-char">.</button> -->
-            <button class="input-button numpad-minus" style="pointer-events: none;opacity: 0.4;background: #c1c1c1;">+/-</button> 
-            <button class="input-button number-char" style="pointer-events: none;opacity: 0.4;background: #c1c1c1;">0</button> 
-            <button class="input-button number-char" style="pointer-events: none;opacity: 0.4;background: #c1c1c1;">.</button> 
+
+	    <!-- Extra Utilities Code iTC Store -->
+            <t t-if="widget.pos.config.disable_price_modification"
+                <button class="input-button numpad-minus" style="pointer-events: none;opacity: 0.4;background: #c1c1c1;">+/-</button> 
+                <button class="input-button number-char" style="pointer-events: none;opacity: 0.4;background: #c1c1c1;">0</button> 
+                <button class="input-button number-char" style="pointer-events: none;opacity: 0.4;background: #c1c1c1;">.</button> 
+            </t>
+            <t t-if="! widget.pos.config.disable_price_modification">
+                <button class="input-button numpad-minus" >+/-</button>
+                <button class="input-button number-char">0</button>
+                <button class="input-button number-char">.</button> -->
+            </t>
+
             <button class="input-button numpad-backspace">
                 <img style="pointer-events: none;" src="/point_of_sale/static/src/img/backspace.png" width="24" height="21" />
             </button>
